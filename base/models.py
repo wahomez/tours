@@ -52,8 +52,9 @@ class Trip(models.Model):
         return str(self.tour) + ('----') + str(self.user.username)
 
 class Review(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_review", blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_review")
     comment = models.TextField()
+    uploaded_date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.user
