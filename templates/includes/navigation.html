@@ -1,0 +1,67 @@
+<!--nav bar-->
+<nav class="navbar navbar-expand-sm navbar-dark fixed-top mt-2 mx-4" id="indexNavbar">
+    <div class="container-fluid">
+        <a class="navbar-brand me-1 ms-4" href= {% url 'home' %}>
+            <!--<img src="../media/images/wolflogo.jpg" class="" alt="" width="45" height="45">-->
+            <h5><i><strong>Cruize Beyond <br> Tours & Travel</strong></i></h5>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-center" id="navbarContent">
+            <ul class="navbar-nav mb-2 mb-lg-0">
+                <!--<li class="nav-item me-1 ms-4">
+                    <a class="navbar-brand" href="index.php">
+                        <img src="media/logo.svg" class="" alt="" width="45" height="45">
+                    </a>
+                </li>-->
+                <li class="nav-item mx-md-1">
+                    <a class="nav-link active" aria-current="page" href= '/#homeContainer'>Home</a>
+                </li>
+                <li class="nav-item mx-md-1">
+                    <a class="nav-link" href="/#toursContainer">Tour Categories</a>
+                </li>
+                <!--<li class="nav-item dropdown mx-md-1">
+                    <a class="nav-link dropdown-toggle" href="#" id="aboutUs" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Tour Categories
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="aboutUs">
+                        <li><a class="dropdown-item" href="index.php#tourContainer">Who We Are</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="index.php#theTeam">Our Team</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="index.php#clients">Our Clientele</a></li>
+                    </ul>
+                </li>-->
+                <!--<li class="nav-item dropdown mx-md-1">
+                    <a class="nav-link dropdown-toggle" href="#" id="services" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Our Services
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="services">
+                        <li><a class="dropdown-item" href="corporateservices.php">Corporate Services</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="counselingservices.php">Counseling Services</a></li>
+                    </ul>
+                </li>-->
+                <li class="nav-item mx-md-2">
+                    <a class="nav-link" href="/#aboutContainer">Why us?</a>
+                </li>
+                <li class="nav-item mx-md-1">
+                    <a class="nav-link" href={% url 'gallery'%}>Gallery</a>
+                </li>
+                <li class="nav-item mx-md-1">
+                    <a class="nav-link" href={% url 'contact'%}>Contact Us</a>
+                </li>
+                <!--<li class="nav-item mx-auto">
+                    <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="index.php#registerModal">Sign Up</button>
+                </li>-->
+            </ul>
+        </div>
+        {% if user.is_authenticated %}
+        <a role="button" class="btn btn-outline-light" href={% url "logout"%}>Logout</a>
+        {% else %}
+        <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#registerModal">Sign Up</button>
+        {% endif %}
+        
+    </div>
+</nav>

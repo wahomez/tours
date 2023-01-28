@@ -1,0 +1,226 @@
+ {% extends 'header.html' %}
+ {% load static %}
+ {% block content %}
+ <div class="" id="indexContainer" data-bs-spy="scroll" data-bs-target="indexNavbar">
+    <div id="homeContainer">
+        
+        <!-- register modal -->
+        <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" id="registerModalContent">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="registerModalLabel">Register</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST">
+                            {% csrf_token %}
+                            <div class="form-floating">
+                                {{form.as_p}}
+                            </div>
+                            
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-outline-light">Register</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+        <!-- login modal -->
+        <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" id="loginModalContent">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="loginModalLabel">Sign In</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action={% url 'login'%}>
+                            {% csrf_token %}
+                            <label for="userEmail" class="form-label">Email Address</label>
+                            <div class="">
+                                <!--<span class="input-group-text" id="usernameHelp">@</span>-->
+                                <input type="email" class="form-control" name="email" aria-describedby="userEmailHelp">
+                            </div>
+                            <br>
+                            <div class="">
+                                <label for="userPassword" class="form-label">Password</label>
+                                <input type="password" class="form-control" name="password">
+                            </div>
+                            
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-outline-light">Sign in</button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+
+        <div class="" id="homeBgVideoContainer">
+            <video autoplay loop muted class="" id="homeBgVideo">
+                <source src={% static 'videos/walkinggiraffehd.mp4' %} type="video/mp4"> 
+            </video>
+        </div>
+        <div class="row justify-content-center" id="homeHeading">
+            <div class="col-sm-6 text-center">
+                <h1>Cruize Beyond Tours & Travel</h1>
+                <h6><i>We open your eyes to a whole new world!</i></h6>
+                <br><br>
+                <a class="btn btn-outline-light" href="#toursContainer" role="button">Choose a tour</a>
+                {% if user.is_authenticated%}
+                {% else %}
+                    <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#loginModal">Sign In</button>
+                {% endif %}
+                
+            </div>
+        </div>
+        <div class="row text-center" id="homeTagLineQuote">
+            <div class="col-sm-3 mx-3" id="homeTagLine">
+                <h3>All you need to do is open your eyes</h3>
+                <p>We take you to the right places</p>
+            </div>
+            <div class="col-sm-3 mx-3" id="homeQuote">
+                <p><br>It is only in adventure that some people succeed in knowing themselves — in finding themselves.<br> ~ André Gide ~</p>
+            </div>
+        </div>
+    </div>
+    <!--inspiration quote container-->
+    <div id="inspirationQuoteContainer">
+        <div class="row justify-content-center text-center">
+            <div class="col-sm-8">
+                <h4> Food for the soul</h4>
+                <br>
+                <p>Here is a word of advice — see the world. Travel abroad and seek some kindly educated animal to teach you,
+                    for though this garden is one of extreme beauty, your mind will ne’er be broadened and developed by resting peacefully at home.
+                    <br>
+                    ~ Livingston Welch, A Victim of Rest, 1924  [Mr. Boa to Eve —tg] ~</p>
+            </div>
+        </div>
+    </div>
+    <!--tours container-->
+    <div class="container-fluid" id="toursContainer">
+        <div class="row justify-content-center text-center" id="toursHeading">
+            <div class="col-sm-6">
+                <h3>Choose one, or all of them </h3>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-sm-9 m-3" id="excursionsCategory">
+                    <div id="excursionsCategoryOverlay">
+                        <h5>Excursions</h5>
+                            <p>Life is busier than we all were ready for, yet there is still time for even the shortest trip of pleasure.
+                            Like life, we offer short and sweet excursions to the most famous, stress relieving and therapeutic scenaries and places.
+                            It only takes a moment to experience peace that lasts so long</p>
+                            <a class="btn btn-outline-light" href={%url 'excursions'%}>See Destinations</a> 
+                    </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-sm-9 m-3" id="safariCategory">
+                <div id="safariCategoryOverlay">
+                    <h5>Safari Tours</h5>
+                        <p>Here in Africa, Kenya, is the best destination for anyone desiring a trip through the jungle, while experiencing views and creation
+                        like never before. From the majestic thumps of the African Elephant, to the stealth and swift of the Cheetah, the colors of a birds feathers,
+                        to the majestic of the Lion, beyond seeing, come experience it. </p>
+                        <a class="btn btn-outline-light" href="safaritours.php">See Destinations</a>
+                </div>
+            </div>
+        </div>
+        <!--<div class="row justify-content-center">
+            <div class="col-sm-9 m-3" id="culturalCategory">
+                <div id="culturalCategoryOverlay">
+                    <h5>Cultural Tours</h5>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+                        ut labore et dolore magna aliqua. Dui ut ornare lectus sit amet.</p>
+                    <a class="btn btn-outline-light" href="excursions.php">See Destinations</a>
+                </div>
+            </div>
+        </div>-->
+        <!--<div class="row justify-content-center">
+            <div class="col-sm-9 m-3" id="historicalCategory">
+                <div id="historicalCategoryOverlay">
+                    <h5>Historical Tours</h5>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+                        ut labore et dolore magna aliqua. Dui ut ornare lectus sit amet.</p>
+                    <a class="btn btn-outline-light" href="excursions.php">See Destinations</a>
+                </div>
+            </div>
+        </div>-->
+        <!--<div class="row justify-content-center">
+            <div class="col-sm-9 m-3" id="culinaryCategory">
+                <div id="culinaryCategoryOverlay">
+                    <h5>Culinary Tours</h5>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+                        ut labore et dolore magna aliqua. Dui ut ornare lectus sit amet.</p>
+                    <a class="btn btn-outline-light" href="excursions.php">See Destinations</a>
+                </div>
+            </div>
+        </div>-->
+        <!--<div class="row justify-content-center">
+            <div class="col-sm-9 m-3" id="hikingCategory">
+                <div id="hikingCategoryOverlay">
+                    <h5>Hiking Tours</h5>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+                        ut labore et dolore magna aliqua. Dui ut ornare lectus sit amet.</p>
+                    <a class="btn btn-outline-light" href="excursions.php">See Destinations</a>
+                </div>
+            </div>
+        </div>-->
+            <!--<div class="col-sm-3 m-3" id="toursCategory">
+                <img src="media/images/twozebras.jpg" alt="..." class="image">
+                <div class="middle">
+                    <div class="text">John Doe</div>
+                </div>
+            </div>-->
+        </div>
+    </div>
+    <!--about us-->
+    <div class="parallax" id="aboutContainer">
+        <div class="container-fluid" id="aboutOverlay">
+            <div class="row justify-content-center text-center" id="aboutHeading">
+                <div class="col-sm-6 m-3">
+                    <h3>Why travel with us?</h3>
+                </div>
+            </div>
+            <div class="row justify-content-center text-center">
+                <div class="col-sm-8 my-3">
+                    <h4>Local Tour Guides</h4>
+                    <p>
+                        Our tour guides are locals. This simply translates to a guide that knows every corner of both the park and the city.
+                        They guide you beyond physical boundaries, into the heart of the city and even that of the local people. For every trip,
+                        the best guide is selected for the best experience. We do not compromise!
+                    </p>
+                </div>
+                <div class="col-sm-8 my-3">
+                    <h4>Wealth of Experience</h4>
+                        <p>
+                            Be it culinary, historical, nature trails, mountain peaks and everything in between, we know it all. We belong here, this is our home.
+                            We have adventured through this land a thousand times over. More than anyone else, we have the experience to take you around our beutiful homeland.
+                        </p>
+                </div>
+                <div class="col-sm-8 my-3">
+                    <h4>Highly Flexible Packages</h4>
+                        <p>
+                            With us, adventure begins right from the packages we offer. Highly flexible and curated to cater for any type of tour, group, and destination,
+                            we have it all covered. You will find the perfect package, for any kind of adventure you choose for yourself. We are here to fulfil your desires
+                        </p>
+                </div>
+                <div class="col-sm-8 my-3">
+                    <h4>Our Love of Smiles</h4>
+                        <p>
+                            Yes! Your smile is the most beautiful thing we have ever seen. No, it is not the playing of a lioness and her cubs, or the baby elephant keeping up
+                            with her mother. We cannot even dare say it is the sight of a million wild beasts crossing the river, it is your smile. Before, during, and after your tour,
+                            your smile from satisfaction is the source of our satisfaction.
+                        </p>
+            </div>
+        </div>
+    </div>
+ {% endblock %}
+   
