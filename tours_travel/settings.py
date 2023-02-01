@@ -29,11 +29,11 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", get_random_secret_key())
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['cruizesafari.up.railway.app', '127.0.0.1:8000']
+ALLOWED_HOSTS = ['cruizesafari.up.railway.app', '127.0.0.1:8000', 'cruizesafaris.com']
 
 AUTH_USER_MODEL = 'base.User'
 
-CSRF_TRUSTED_ORIGINS = ['*']
+CSRF_TRUSTED_ORIGINS = ['https://cruizesafaris.com/']
 
 # Application definition
 
