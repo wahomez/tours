@@ -33,7 +33,7 @@ ALLOWED_HOSTS = ['cruizesafari.up.railway.app', '127.0.0.1:8000']
 
 AUTH_USER_MODEL = 'base.User'
 
-CSRF_TRUSTED_ORIGINS=['https://cruizesafari.up.railway.app']
+CSRF_TRUSTED_ORIGINS=['https://cruizesafaris.com/']
 
 # Application definition
 
