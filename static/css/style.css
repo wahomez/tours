@@ -247,14 +247,27 @@
 #safariTourTwoContainerImage{
     /*padding: 10px 5px 10px 90px;*/
 }
-#safariDestinationContainer{
-    background-color: black;
+#destinationContainer{
+    /*background-color: black;*/
     padding: 0 30px;
+    min-height: 100vh;
     color: snow;
 }
-#safariDestinationHeaderImage{
+#destinationHeaderImage{
+    padding: 100px 0 50px 0;
+}
+#destinationHeaderImage img{
     width: 100%;
     height: 20%;
+}
+#destinationContainerHeading{
+    background-image: url("../images/IMG_8710.JPG");
+    background-size: cover;
+    background-position: center;
+    padding: 150px 0 50px 0;
+}
+#destinationAboutContainer{
+    padding: 30px 0 20px 0;
 }
 
 
