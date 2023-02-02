@@ -69,9 +69,6 @@ def Review_tour(request):
 
     return HttpResponse("It works")
 
-
-
-
 def Register(request):
     if request.method =="POST":
         email = request.POST['email']
