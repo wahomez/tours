@@ -200,6 +200,12 @@
 #excursionsContainer{
     min-height: 100vh;
     background-color: black;
+    padding: 0 30px;
+    color: snow;
+}
+#excursionsContainerHeader{
+    padding: 120px 20px 10px 20px;
+    color: snow;
 }
 #excursionOneContainer{
     padding: 100px 30px;
@@ -219,6 +225,12 @@
 #safariToursContainer{
     min-height: 100vh;
     background-color: black;
+    padding: 0 30px;
+    color: snow;
+}
+#safariToursContainerHeader{
+    padding: 120px 20px 10px 20px;
+    color: snow;
 }
 #safariTourOneContainer{
     padding: 100px 30px /*100px 100px*/;
@@ -235,6 +247,17 @@
 #safariTourTwoContainerImage{
     /*padding: 10px 5px 10px 90px;*/
 }
+#safariDestinationContainer{
+    background-color: black;
+    padding: 0 30px;
+    color: snow;
+}
+#safariDestinationHeaderImage{
+    width: 100%;
+    height: 20%;
+}
+
+
 #galleryContainer{
     background-color: black;
 }
