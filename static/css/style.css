@@ -200,6 +200,12 @@
 #excursionsContainer{
     min-height: 100vh;
     background-color: black;
+    padding: 0 30px;
+    color: snow;
+}
+#excursionsContainerHeader{
+    padding: 120px 20px 10px 20px;
+    color: snow;
 }
 #excursionOneContainer{
     padding: 100px 30px;
@@ -219,6 +225,12 @@
 #safariToursContainer{
     min-height: 100vh;
     background-color: black;
+    padding: 0 30px;
+    color: snow;
+}
+#safariToursContainerHeader{
+    padding: 120px 20px 10px 20px;
+    color: snow;
 }
 #safariTourOneContainer{
     padding: 100px 30px /*100px 100px*/;
@@ -235,6 +247,30 @@
 #safariTourTwoContainerImage{
     /*padding: 10px 5px 10px 90px;*/
 }
+#destinationContainer{
+    /*background-color: black;*/
+    padding: 0 30px;
+    min-height: 100vh;
+    color: snow;
+}
+#destinationHeaderImage{
+    padding: 100px 0 50px 0;
+}
+#destinationHeaderImage img{
+    width: 100%;
+    height: 20%;
+}
+#destinationContainerHeading{
+    background-image: url("../images/IMG_8710.JPG");
+    background-size: cover;
+    background-position: center;
+    padding: 150px 0 50px 0;
+}
+#destinationAboutContainer{
+    padding: 30px 0 20px 0;
+}
+
+
 #galleryContainer{
     background-color: black;
 }
@@ -249,7 +285,7 @@
     transform: scale(2.0);
 }
 #contactUsContainer{
-    background-image: url("../images/IMG_7919.JPG");
+    background-image: url("../images/IMG_8715.JPG");
     height: 100%;
 
     /* Create the parallax scrolling effect */
