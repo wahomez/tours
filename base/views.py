@@ -48,8 +48,14 @@ def Contact(request):
 def Excursions(request):
     return render(request, "excursions.html")
 
-def Destination(request):
-    return render(request, "destination.html")
+def destination_page(request):
+    tours = Destination.objects.all()
+    review = Review.objects.all()
+    context = {
+        "tours" : tours,
+        "review" : review
+    }
+    return render(request, "destination.html", context)
 
 def Gallery(request):
     return render(request, "gallery.html")

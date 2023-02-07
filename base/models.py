@@ -52,15 +52,25 @@ class Trip(models.Model):
         return str(self.tour) + ('----') + str(self.user.username)
 
 class Review(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_review")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="review")
     comment = models.TextField()
     uploaded_date = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.user
+        return self.user.username
 
 
+class Destination(models.Model):
+    # user = models.OneToOneField(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=250)
+    about = models.TextField()
+    notes = models.TextField()
+    schedule = models.TextField()
+    itinerary = models.TextField()
+    poster = models.ImageField()
 
+    def __str__(self):
+        return self.name
 
 
 
