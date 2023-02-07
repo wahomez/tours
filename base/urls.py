@@ -22,6 +22,7 @@ urlpatterns = [
     path("", views.Home, name="home"),
     path("contact/", views.Contact, name="contact"),
     path("excursion/", views.Excursions, name="excursions"),
+    path("destination/", views.Destination, name="destination"),
     path("gallery/", views.Gallery, name="gallery"),
     path("safari/", views.Safari, name="safari"),
     path("review/", views.Review_tour, name="review"),
