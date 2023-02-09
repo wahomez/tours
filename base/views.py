@@ -65,7 +65,7 @@ def Safari(request):
 
 
 def Review_tour(request):
-    tour_review = Review.objects.all()
+    tour_review = Review.objects.all
     if request.method == 'POST':
         user = request.user
         comment = request.POST['comment']
@@ -74,9 +74,12 @@ def Review_tour(request):
         messages.success(request, ("Review sent successfully"))
         return redirect("/")
     else:
-        messages.success(request, ("Couldn't send review"))
 
-    return HttpResponse("It works")
+        context = {
+            "review" : tour_review
+        }
+        return render(request, "review.html", context)
+
 
 def Register(request):
     if request.method =="POST":

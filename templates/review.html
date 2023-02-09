@@ -1,0 +1,14 @@
+{% extends 'header.html' %}
+{% block content %}
+<div class="container">
+    <h1>Review Page</h1>
+    {% for review in review%}
+    <div class="alert alert-success" role="alert">
+        User: {{review.user|upper}}<br>
+        Review: {{review.comment}}<br>
+        Date Reviewed: {{review.uploaded_date}}<br>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock content %}

@@ -48,25 +48,20 @@
             </div>
             <div class="row justify-content-center">
                 <div class="col-sm-6">
-                    <div class="form-floating" data-bs-theme="dark">
-                        <textarea class="form-control" placeholder="Leave a review here" id="destinationReview" style="height: 100px"></textarea>
-                        <label for="destinationReview">Review</label>
-                        <br>
-                    </div>
+                    <form method="POST" action= "{%url "review" %}">
+                        {% csrf_token %}
+                        <div class="form-floating" data-bs-theme="dark">
+                            <textarea class="form-control" placeholder="Leave a review here" name="comment" style="height: 100px"></textarea>
+                            <label for="destinationReview">Review</label>
+                            <br>
+                            <button type="submit" class="btn btn-outline-primary">Submit</button>
+                        </div>
+                    </form>
                 </div>
             </div>
-
-            <div class="row justify-content-center text-right">
-                <div class="col-sm-6">
-                    <h6>{{tour.user.username}} : <i>date</i></h6>
-                    <p>
-                        {%for review in review%}
-                            Review: {{review.comment}}
-                        {% endfor %}
-                        
-                    </p>
-                </div>
-            </div>
+        </br>
+        <a class="btn btn-outline-light" href={%url "review"%} role="button">View Reviews</a>
+        <br></br>
         {% endfor %}
     {% endif %}
 </div>
