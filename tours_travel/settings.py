@@ -32,12 +32,12 @@ DEBUG = True
 ALLOWED_HOSTS = ['cruizesafaris.com']
 
 CORS_ALLOWED_ORIGINS = [
-    'https://cruizesafaris.com/',
-]
+    'https://cruizesafaris.com'
+    ]
 
 AUTH_USER_MODEL = 'base.User'
 
-CSRF_TRUSTED_ORIGINS = ['https://cruizesafaris.com/',]
+CSRF_TRUSTED_ORIGINS = ['https://cruizesafaris.com',]
 
 # Application definition
 
