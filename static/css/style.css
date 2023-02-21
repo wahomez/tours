@@ -136,6 +136,28 @@
     transition: .5s ease;
     padding: 80px 30px;
 }
+#farmCategory{
+    background: url("../images/IMG_7751.JPG") center;
+    background-size: cover;
+    color: snow;
+    padding: 20px 45px;
+}
+#farmCategoryOverlay{
+    background-color: rgba(0, 0, 0, 0.58);
+    transition: .5s ease;
+    padding: 80px 30px;
+}
+#hikingAdventureCategory{
+    background: url("../images/IMG_8021.JPG") center;
+    background-size: cover;
+    color: snow;
+    padding: 20px 45px;
+}
+#hikingAdventureCategoryOverlay{
+    background-color: rgba(0, 0, 0, 0.58);
+    transition: .5s ease;
+    padding: 80px 30px;
+}
 #culturalCategory{
     background-image: url("../images/twozebras.jpg");
     background-size: cover;
@@ -207,6 +229,11 @@
     padding: 120px 20px 10px 20px;
     color: snow;
 }
+#excursionsContainer .card-img-top{
+    width: 100%;
+    height: 15vw;
+    object-fit: cover;
+}
 #excursionOneContainer{
     padding: 100px 30px;
     color: snow;
@@ -232,6 +259,11 @@
     padding: 120px 20px 10px 20px;
     color: snow;
 }
+#safariToursContainer .card-img-top{
+    width: 100%;
+    height: 15vw;
+    object-fit: cover;
+}
 #safariTourOneContainer{
     padding: 100px 30px /*100px 100px*/;
     color: snow;
@@ -246,6 +278,36 @@
 }
 #safariTourTwoContainerImage{
     /*padding: 10px 5px 10px 90px;*/
+}
+#farmToursContainer{
+    min-height: 100vh;
+    background-color: black;
+    padding: 0 30px;
+    color: snow;
+}
+#farmToursContainerHeader{
+    padding: 120px 20px 10px 20px;
+    color: snow;
+}
+#farmToursContainer .card-img-top{
+    width: 100%;
+    height: 15vw;
+    object-fit: cover;
+}
+#hikingAdventureToursContainer{
+    min-height: 100vh;
+    background-color: black;
+    padding: 0 30px;
+    color: snow;
+}
+#hikingAdventureToursContainerHeader{
+    padding: 120px 20px 10px 20px;
+    color: snow;
+}
+#hikingAdventureToursContainer .card-img-top{
+    width: 100%;
+    height: 15vw;
+    object-fit: cover;
 }
 #destinationContainer{
     /*background-color: black;*/

@@ -63,6 +63,12 @@ def Gallery(request):
 def Safari(request):
     return render(request, "safaritours.html")
 
+def Farm(request):
+    return render(request, "farmtours.html")
+
+def hikingAdventure(request):
+    return render(request, "hikingadventuretours.html")
+
 
 def Review_tour(request):
     tour_review = Review.objects.all
