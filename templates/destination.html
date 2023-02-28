@@ -46,6 +46,49 @@
                     </p>
                 </div>
             </div>
+
+    <br>
+    <!--booking-->
+    <div class="justify-content-center" id="destinationBooking">
+        <form class="row justify-content-center g-3">
+            <div class=" col-3">
+                <!--<label for="datePickerFrom" class="">From</label>-->
+                <div class="input-group">
+                    <div class="input-group-text" id="basic-addon1">From</div>
+                    <input type="date" class="form-control" id="datePickerFrom" value="">
+                </div>
+            </div>
+            <div class="col-3">
+                <!--<label for="datePickerTo" class="">To</label>-->
+                <div class="input-group">
+                    <div class="input-group-text" id="basic-addon2">To</div>
+                    <input type="date" class="form-control" id="datePickerTo" value="" disabled>
+                </div>
+            </div>
+            <div class="col-auto">
+                <!--<label for="participants" class="visually-hidden">Password</label>-->
+                <!--<input type="password" class="form-control" id="participants" placeholder="no. of people">-->
+                <select class="form-select" aria-label="participants">
+                    <option selected>No. of people?</option>
+                    <option value="1">1 - 3</option>
+                    <option value="2">3 - 6</option>
+                    <option value="3">6 - 9</option>
+                    <option value="4">9+</option>
+                    <!--<option value="5">5</option>
+                    <option value="6">6</option>
+                    <option value="7">7</option>
+                    <option value="8">8</option>
+                    <option value="9">9</option>-->
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-outline-success mb-3">Book Now</button>
+            </div>
+            <div class="row justify-content-center my-3">
+            </div>
+        </form>
+    </div>
+    <br>
             <div class="row justify-content-center">
                 <div class="col-sm-6">
                     <form method="POST" action= "{%url "review" %}">
