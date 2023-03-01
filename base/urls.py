@@ -28,6 +28,7 @@ urlpatterns = [
     path("farm/", views.Farm, name="farm"),
     path("hikingadventure/", views.hikingAdventure, name="hikingadventure"),
     path("review/", views.Review_tour, name="review"),
+    path("checkout/", views.checkout, name="checkout"),
     path("register/", views.Register, name="register"),
     path("login/", views.login_user, name="login"),
     path("logout/", views.logout_user, name="logout"),

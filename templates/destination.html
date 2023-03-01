@@ -103,7 +103,17 @@
                 </div>
             </div>
         </br>
-        <a class="btn btn-outline-light" href={%url "review"%} role="button">View Reviews</a>
+       <div class="container">
+            <h4><center><strong>REVIEWS<strong></center><h4>
+            {% for review in review%}
+            
+                <h6><strong>User:</strong> {{review.user|upper}}</h6>
+                <h6><strong>Review:</strong> {{review.comment}}</h6>
+                <h6><strong>Date Reviewed:</strong> {{review.uploaded_date}}</h6>
+            <br>
+            {% endfor %}
+        
+        </div>
         <br></br>
         {% endfor %}
     {% endif %}

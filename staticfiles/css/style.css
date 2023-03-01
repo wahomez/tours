@@ -1,0 +1,461 @@
+#indexContainer{
+    /* max-height: 100vh; */
+    background-color: rgba(0, 0, 0, 0.32);
+    color: whitesmoke;
+}
+.navbar{
+    position: fixed;
+    margin: 20px 20px;
+    background-color: rgba(8, 54, 0, 0.85);
+}
+#registerModalContent{
+    background-color: #081f00;
+    color: #fff;
+    opacity: 1;
+}
+
+#loginModalContent{
+    background-color: #081f00;
+    color: #fff;
+    opacity: 1;
+}
+#homeContainer{
+    background: url("../images/IMG_7554.JPG") center /*fixed*/;
+    background-size: cover;
+    /*min-height: 100vh;*/
+    width: 100%;
+    height: auto;
+    /*padding-top: -200px;
+    padding-bottom: 200px;*/
+    /*padding: 0 0 250px 0;*/
+}
+#homeBgVideoContainer{
+    /*width: 100%;
+    height: auto;*/
+    /*object-fit: fill;*/
+}
+#homeBgVideo{
+    position: absolute;
+    /*right: 0;*/
+    /*bottom: 0;*/
+    /*min-width: 100%;*/
+    /*min-height: 100%;*/
+    width: 100vw;
+    height: auto;
+    z-index: -2;
+    overflow: hidden;
+    /* object-fit: fill; */
+}
+#homeHeading{
+    padding: 200px 20px 50px 20px;
+    z-index: 1;
+}
+#homeTagLineQuote{
+    padding: 150px 20px 20px 20px;
+}
+#homeTagLine{
+    background-color: rgba(0, 0, 0, 0.85);
+}
+#homeQuote{
+    background-color: rgba(255, 255, 255, 0.73);
+    color: black;
+}
+#inspirationQuoteContainer{
+    background-color: #081f00;
+    /*margin: 150px 0 0 0;*/
+    padding: 50px 20px 20px 30px;
+}
+#toursContainer{
+    min-height: 100vh;
+    background-color: rgb(0, 0, 0);
+    /*margin: 150px 0 0 0;*/
+    padding: 50px 20px 20px 30px;
+    color: black;
+}
+#toursHeading{
+    padding: 50px 0 20px 0;
+    color: whitesmoke;
+}
+
+/*#toursCategory{
+    position: relative;
+    !*width: 50%*!
+}
+#toursCategory .image{
+    opacity: 1;
+    display: block;
+    width: 100%;
+    height: auto;
+    transition: .5s ease;
+    backface-visibility: hidden;
+}
+#toursCategory .middle{
+    transition: .5s ease;
+    opacity: 0;
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    !*bottom: 5px;
+    right: 5px;*!
+    transform: translate(-50%, -50%);
+    !*-ms-transform: translate(-50%, -50%);*!
+    text-align: center;
+}
+#toursCategory:hover .image {
+    opacity: 0.3;
+}
+
+#toursCategory:hover .middle {
+    opacity: 0.5;
+}
+#toursCategory .text {
+    background-color: #04AA6D;
+    color: white;
+    font-size: 16px;
+    padding: 16px 32px;
+}*/
+#excursionsCategory{
+    background: url("../images/IMG_8035.JPG") center;
+    background-size: cover;
+    color: snow;
+    padding: 20px 45px;
+}
+#excursionsCategoryOverlay{
+    background-color: rgba(0, 0, 0, 0.58);
+    transition: .5s ease;
+    padding: 80px 30px;
+}
+#safariCategory{
+    background: url("../images/IMG_8715.JPG") center;
+    background-size: cover;
+    color: snow;
+    padding: 20px 45px;
+}
+#safariCategoryOverlay{
+    background-color: rgba(0, 0, 0, 0.58);
+    transition: .5s ease;
+    padding: 80px 30px;
+}
+#farmCategory{
+    background: url("../images/IMG_7751.JPG") center;
+    background-size: cover;
+    color: snow;
+    padding: 20px 45px;
+}
+#farmCategoryOverlay{
+    background-color: rgba(0, 0, 0, 0.58);
+    transition: .5s ease;
+    padding: 80px 30px;
+}
+#hikingAdventureCategory{
+    background: url("../images/IMG_8021.JPG") center;
+    background-size: cover;
+    color: snow;
+    padding: 20px 45px;
+}
+#hikingAdventureCategoryOverlay{
+    background-color: rgba(0, 0, 0, 0.58);
+    transition: .5s ease;
+    padding: 80px 30px;
+}
+#culturalCategory{
+    background-image: url("../images/twozebras.jpg");
+    background-size: cover;
+    color: snow;
+    padding: 20px 65px;
+}
+#culturalCategoryOverlay{
+    background-color: rgba(0, 0, 0, 0.58);
+    transition: .5s ease;
+    padding: 80px 40px;
+}
+#historicalCategory{
+    background-image: url("../images/twozebras.jpg");
+    background-size: cover;
+    color: snow;
+    padding: 20px 65px;
+}
+#historicalCategoryOverlay{
+    background-color: rgba(0, 0, 0, 0.58);
+    transition: .5s ease;
+    padding: 80px 40px;
+}
+#culinaryCategory{
+    background-image: url("../images/twozebras.jpg");
+    background-size: cover;
+    color: snow;
+    padding: 20px 65px;
+}
+#culinaryCategoryOverlay{
+    background-color: rgba(0, 0, 0, 0.58);
+    transition: .5s ease;
+    padding: 80px 40px;
+}
+#hikingCategory{
+    background-image: url("../images/twozebras.jpg");
+    background-size: cover;
+    color: snow;
+    padding: 20px 65px;
+}
+#hikingCategoryOverlay{
+    background-color: rgba(0, 0, 0, 0.58);
+    transition: .5s ease;
+    padding: 80px 40px;
+}
+#aboutOverlay{
+    background-color: rgba(0, 0, 0, 0.82);
+    padding: 120px 20px 100px 20px;
+}
+#aboutContainer.parallax{
+    background-image: url("../images/IMG_8126.JPG");
+    /* Set a specific height */
+    min-height: 100vh;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: snow;
+}
+#aboutHeading{
+    padding: 20px 0 10px 0;
+}
+#excursionsContainer{
+    min-height: 100vh;
+    background-color: black;
+    padding: 0 30px;
+    color: snow;
+}
+#excursionsContainerHeader{
+    padding: 120px 20px 10px 20px;
+    color: snow;
+}
+#excursionsContainer .card-img-top{
+    width: 100%;
+    height: 15vw;
+    object-fit: cover;
+}
+#excursionOneContainer{
+    padding: 100px 30px;
+    color: snow;
+}
+#excursionOneContainerImage{
+    /*background-image: url("../media/images/twozebras.jpg");*/
+    /*padding: 10px 90px 10px 5px;*/
+}
+#excursionTwoContainer{
+    padding: 100px 30px /*100px 10px*/;
+    color: snow;
+}
+#excursionTwoContainerImage .img{
+
+}
+#safariToursContainer{
+    min-height: 100vh;
+    background-color: black;
+    padding: 0 30px;
+    color: snow;
+}
+#safariToursContainerHeader{
+    padding: 120px 20px 10px 20px;
+    color: snow;
+}
+#safariToursContainer .card-img-top{
+    width: 100%;
+    height: 15vw;
+    object-fit: cover;
+}
+#safariTourOneContainer{
+    padding: 100px 30px /*100px 100px*/;
+    color: snow;
+}
+#safariTourOneContainerImage{
+    /*background-image: url("../media/images/twozebras.jpg");*/
+    /*padding: 10px 90px 10px 5px;*/
+}
+#safariTourTwoContainer{
+    padding: 100px 30px /*100px 100px*/;
+    color: snow;
+}
+#safariTourTwoContainerImage{
+    /*padding: 10px 5px 10px 90px;*/
+}
+#farmToursContainer{
+    min-height: 100vh;
+    background-color: black;
+    padding: 0 30px;
+    color: snow;
+}
+#farmToursContainerHeader{
+    padding: 120px 20px 10px 20px;
+    color: snow;
+}
+#farmToursContainer .card-img-top{
+    width: 100%;
+    height: 15vw;
+    object-fit: cover;
+}
+#hikingAdventureToursContainer{
+    min-height: 100vh;
+    background-color: black;
+    padding: 0 30px;
+    color: snow;
+}
+#hikingAdventureToursContainerHeader{
+    padding: 120px 20px 10px 20px;
+    color: snow;
+}
+#hikingAdventureToursContainer .card-img-top{
+    width: 100%;
+    height: 15vw;
+    object-fit: cover;
+}
+#destinationContainer{
+    /*background-color: black;*/
+    padding: 0 30px;
+    min-height: 100vh;
+    color: snow;
+}
+#destinationHeaderImage{
+    padding: 100px 0 50px 0;
+}
+#destinationHeaderImage img{
+    width: 100%;
+    height: 20%;
+}
+#destinationContainerHeading{
+    background-image: url("../images/IMG_8710.JPG");
+    background-size: cover;
+    background-position: center;
+    padding: 150px 0 50px 0;
+}
+#destinationAboutContainer{
+    padding: 30px 0 20px 0;
+}
+#destinationBooking .label{
+}
+#checkout .bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+@media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+    }
+}
+
+#checkout.b-example-divider {
+    height: 3rem;
+    background-color: rgba(0, 0, 0, .1);
+    border: solid rgba(0, 0, 0, .15);
+    border-width: 1px 0;
+    box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+}
+
+#checkout.b-example-vr {
+    flex-shrink: 0;
+    width: 1.5rem;
+    height: 100vh;
+}
+
+#checkout.bi {
+    vertical-align: -.125em;
+    fill: currentColor;
+}
+
+#checkout.nav-scroller {
+    position: relative;
+    z-index: 2;
+    height: 2.75rem;
+    overflow-y: hidden;
+}
+
+#checkout.nav-scroller .nav {
+    display: flex;
+    flex-wrap: nowrap;
+    padding-bottom: 1rem;
+    margin-top: -1px;
+    overflow-x: auto;
+    text-align: center;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+}
+
+
+#galleryContainer{
+    background-color: black;
+}
+#galleryHeader{
+    padding: 120px 30px 20px 30px;
+    color: snow;
+}
+#imagesContainer{
+    padding: 30px 30px 30px 30px;
+}
+#imagesContainer img:hover {
+    transform: scale(2.0);
+}
+#contactUsContainer{
+    background-image: url("../images/IMG_8715.JPG");
+    height: 100%;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    /*padding: 70px 20px;*/
+    color: #fffafa;
+}
+#contactOpacityContainer{
+    background-color: rgba(27, 27, 27, 0.55);
+    margin: 10px 60px;
+    padding-bottom: 20px;
+}
+#contactUsHeader{
+    background-color: #1b1b1b;
+    padding:100px 20px 40px 20px;
+    color: #fffafa;
+}
+#formContainer{
+    padding: 20px 20px;
+    /*opacity: 1;*/
+    /*z-index: 0;*/
+}
+#infoContainer{
+    /*margin: 10px 20px;*/
+    padding: 10px 20px;
+}
+
+
+
+
+#footerContainer{
+    background-color: #000000;
+    color: #fffafa;
+    height: auto;
+    width: auto;
+    padding: 13px 0 0 0;
+    /*z-index: 1;*/
+}
+#footerContainer .fa-youtube{
+    color: red;
+}
+#footerContainer .fa-tiktok{
+    color: ghostwhite;
+}
+#footerContainer .fa-instagram{
+    color: mediumpurple;
+}
+#footerContainer .fa-whatsapp{
+    color: forestgreen;
+}
+#footerContainer a{
+    text-decoration:none;
+}
+#footerContainer a:hover{
+    color: #227900 !important;
+}
