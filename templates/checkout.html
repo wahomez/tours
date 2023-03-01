@@ -1,3 +1,7 @@
+{% extends 'header.html' %}
+{% block content %}
+{% load static %}
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -301,6 +305,7 @@
 
     <script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
 
-      <script src="checkout.js"></script>
+      <script src="{% static 'checkout.js' %}"></script>
   </body>
 </html>
+{% endblock content %}

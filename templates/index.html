@@ -15,9 +15,13 @@
                     <div class="modal-body">
                         <form method="POST">
                             {% csrf_token %}
-                            <div class="form-floating">
-                                {{form.as_p}}
-                            </div>
+                            {% for field in form %}
+                                <div class="form-floater">
+                                    <label>{{field.label}}:</label>
+                                    {{field}}
+                                    <br>
+                                </div>
+                            {% endfor %}
                             
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Close</button>

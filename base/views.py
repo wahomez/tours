@@ -122,3 +122,6 @@ def logout_user(request):
     logout(request)
     messages.success(request, ("You have successfully logged out"))
     return redirect("/")
+
+def checkout(request):
+    return render(request, "checkout.html")
