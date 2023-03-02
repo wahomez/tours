@@ -333,47 +333,47 @@
 }
 #destinationBooking .label{
 }
-#checkout .bd-placeholder-img {
+/*#checkout .bd-placeholder-img {
     font-size: 1.125rem;
     text-anchor: middle;
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
-}
+}*/
 
-@media (min-width: 768px) {
+/*@media (min-width: 768px) {
     .bd-placeholder-img-lg {
         font-size: 3.5rem;
     }
-}
+}*/
 
-#checkout.b-example-divider {
+/*#checkout.b-example-divider {
     height: 3rem;
     background-color: rgba(0, 0, 0, .1);
     border: solid rgba(0, 0, 0, .15);
     border-width: 1px 0;
     box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
-}
+}*/
 
-#checkout.b-example-vr {
+/*#checkout.b-example-vr {
     flex-shrink: 0;
     width: 1.5rem;
     height: 100vh;
-}
+}*/
 
-#checkout.bi {
+/*#checkout.bi {
     vertical-align: -.125em;
     fill: currentColor;
-}
+}*/
 
-#checkout.nav-scroller {
+/*#checkout.nav-scroller {
     position: relative;
     z-index: 2;
     height: 2.75rem;
     overflow-y: hidden;
-}
+}*/
 
-#checkout.nav-scroller .nav {
+/*#checkout.nav-scroller .nav {
     display: flex;
     flex-wrap: nowrap;
     padding-bottom: 1rem;
@@ -382,7 +382,48 @@
     text-align: center;
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
+}*/
+#checkoutContent{
+    padding: 100px 0 0 0;
 }
+/*#tourDetailsHeader a{
+    text-decoration: none !important;
+    color: #fff;
+}
+#tourDetailsHeader a:hover{
+    text-decoration: underline !important;
+    color: #fff;
+}*/
+#tourDetailsHeader a, a{
+    text-decoration: none !important;
+    color: #fff;
+}
+/*#tourDetailsHeader a, a:hover{
+    text-decoration: underline !important;
+    color: #fff !important;
+}*/
+#m-pesaModalContent{
+    background-color: #081f00;
+    color: #fff;
+    opacity: 1;
+}
+.no-arrow {
+    -moz-appearance: textfield;
+}
+.no-arrow::-webkit-inner-spin-button {
+    display: none;
+}
+.no-arrow::-webkit-outer-spin-button,
+.no-arrow::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+/*jquery intltelinput plugin*/
+/*.iti__flag {background-image: url("itlphoneselector/build/img/flags.png");}
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .iti__flag {background-image: url("itlphoneselector/build/img/flags@2x.png");}
+}*/
 
 
 #galleryContainer{
