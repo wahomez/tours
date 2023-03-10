@@ -29,28 +29,6 @@ def createProfile(sender, instance, created, **kwargs):
 
 post_save.connect(createProfile, sender=User)
 
-class Tour(models.Model):
-    name = models.CharField(max_length=200)
-    category = models.CharField(max_length=200)
-    location = models.CharField(max_length=200)
-    amount = models.IntegerField()
-    poster = models.ImageField()
-    description = models.TextField()
-    start_date = models.DateField()
-    end_date = models.DateField(blank=True, null=True)
-    deadline_date = models.DateTimeField()
-
-    def __str__(self):
-        return str(self.name)+ ('----') + str(self.location)
-
-class Trip(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='trip_user')
-    tour = models.ForeignKey(Tour, on_delete=models.CASCADE, related_name="trip_tour")
-    paid = models.BooleanField(default=False)
-
-    def __str__(self):
-        return str(self.tour) + ('----') + str(self.user.username)
-
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="review")
     comment = models.TextField()
@@ -59,10 +37,19 @@ class Review(models.Model):
     def __str__(self):
         return self.user.username
 
-
 class Destination(models.Model):
-    # user = models.OneToOneField(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=250)
+    categories = [
+        ('Excursions', 'Excursions'),
+        ('Safari Tours', 'Safari Tours'),
+        ('Farm Tours', 'Farm Tours'),
+        ('Hiking and Adventures Tours', 'Hiking and Adventures Tours')
+    ]
+    category = models.CharField(max_length=50, choices=categories)
+    description = models.CharField(max_length=200, null=True)
+    name = models.CharField(max_length=250, null=True)
+    duration = models.IntegerField(null=True)
+    amount = models.IntegerField(null=True)
+    review = models.ForeignKey(Review, on_delete=models.CASCADE, null=True, related_name="destination_review")
     about = models.TextField()
     notes = models.TextField()
     schedule = models.TextField()
@@ -72,5 +59,22 @@ class Destination(models.Model):
     def __str__(self):
         return self.name
 
+class Booking(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="booking_user")
+    tour = models.ForeignKey(Destination, on_delete=models.SET_NULL,null=True, related_name="booking_tour")
+    slots = models.IntegerField()
+    paid = models.BooleanField(default=False)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.user) + str("-") + str(self.tour)
+    
+class Payment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    tour = models.ForeignKey(Destination, on_delete=models.SET_NULL, null=True)
+    date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.user) + str("-") + str(self.tour)
 
 

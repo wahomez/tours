@@ -8,67 +8,20 @@
         </div>
     </div>
     <div class="row justify-content-center text-center">
-        <div class="col-sm-3 m-2">
-            <div class="card">
-                <img src="../images/IMG_7476.JPG" class="card-img-top img-fluid" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">The Karen Blixen Museum</h5>
-                    <p class="card-text">
-                        Dive into the past, a historical endeavour. Perfect for personal reflection by the nature trails.
-                    </p>
-                    <a href={% url 'destination' %} class="btn btn-outline-light">View tour</a>
+        {% for tour  in tours %}
+            <div class="col-sm-3 m-2">
+                <div class="card">
+                    <img src="{{tour.poster.url}}" class="card-img-top img-fluid" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{{tour.name}}</h5>
+                        <p class="card-text">
+                            {{tour.description}}
+                        </p>
+                        <a href="{% url 'destination' tour.id %}" class="btn btn-outline-light">View tour</a>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-sm-3 m-2">
-            <div class="card">
-                <img src="../images/IMG_7967.JPG" class="card-img-top img-fluid" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Giraffe Center</h5>
-                    <p class="card-text">
-                        A date with the world's tallest species, so majestic yet so friendly and interactive.
-                    </p>
-                    <a href={% url 'destination' %} class="btn btn-outline-light">View tour</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-3 m-2">
-            <div class="card">
-                <img src="../images/IMG_7834.JPG" class="card-img-top img-fluid" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Bomas of Kenya</h5>
-                    <p class="card-text">
-                        Witness and experience the most exciting and interactive cultural dances. See the beauty that decorates the tribes in Kenya.
-                    </p>
-                    <a href="#" class="btn btn-outline-light">View tour</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-3 m-2">
-            <div class="card">
-                <img src="../images/IMG_7920.JPG" class="card-img-top img-fluid" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">David Shedrick Elephant Orphanage</h5>
-                    <p class="card-text">
-                        Experience the love - and show them some - for wildlife, especially that of orphan elephants, at the most successful elephant rescue and rehabilitation program.
-                    </p>
-                    <a href="#" class="btn btn-outline-light">View tour</a>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-3 m-2">
-            <div class="card">
-                <img src="../images/IMG_7414.JPG" class="card-img-top img-fluid" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Coffee Farm Tour</h5>
-                    <p class="card-text">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-                        ut labore et dolore magna aliqua.
-                    </p>
-                    <a href="#" class="btn btn-outline-light">View tour</a>
-                </div>
-            </div>
-        </div>
+        {% endfor %}
         <!--<div class="col-sm-3 m-2">
             <div class="card">
                 <img src="../images/1.JPG" class="card-img-top img-fluid" alt="...">

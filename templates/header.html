@@ -13,7 +13,19 @@
     <!-- Custom styles for this template -->
     <link href= {% static "css/checkout.css" %} rel="stylesheet">
     <!--fontawesome link-->
+
+    <script src="https://js.stripe.com/v3/"></script>
+    
     <script src="https://kit.fontawesome.com/ff7ecae991.js" crossorigin="anonymous"></script>
+
+    
+
+    <script>
+                // Set your publishable key: remember to change this to your live publishable key in production
+        // See your keys here: https://dashboard.stripe.com/apikeys
+        var stripe = Stripe('pk_test_51MiDDEIgqJPzZ3YM0jvpwlehgbckif6lTeEjCYdAH9Ir2jwaF2LE2d6W26tCF7GPdS108j5l6XW2WCjerWRro6lp00AS8bk2cA');
+        var elements = stripe.elements();
+    </script>
 
     <!--bootstrap checkout form template-->
     <!--<link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/checkout/">-->
