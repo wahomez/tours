@@ -33,15 +33,15 @@ STRIPE_PUBLIC_KEY = 'pk_test_51MiDDEIgqJPzZ3YM0jvpwlehgbckif6lTeEjCYdAH9Ir2jwaF2
 STRIPE_SECRET_KEY = 'sk_test_51MiDDEIgqJPzZ3YMgqCvjzfd7aEy45k7U23xXqJ7QsMRQUFGoE3Wu2viVvK1XKuQLK808bfpy0nLbEn7usgXIqXK00OnSKnG5K'
 
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['cruizesafaris.com']
 
 CORS_ALLOWED_ORIGINS = [
-    '*'
+    'https://cruizesafaris.com/'
     ]
 
 AUTH_USER_MODEL = 'base.User'
 
-# CSRF_TRUSTED_ORIGINS = ['*']
+CSRF_TRUSTED_ORIGINS = ['https://cruizesafaris.com/']
 
 # Application definition
 
