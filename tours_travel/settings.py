@@ -36,12 +36,12 @@ STRIPE_SECRET_KEY = 'sk_test_51MiDDEIgqJPzZ3YMgqCvjzfd7aEy45k7U23xXqJ7QsMRQUFGoE
 ALLOWED_HOSTS = ['cruizesafaris.com']
 
 CORS_ALLOWED_ORIGINS = [
-    'https://cruizesafaris.com/'
+    'https://cruizesafaris.com'
     ]
 
 AUTH_USER_MODEL = 'base.User'
 
-CSRF_TRUSTED_ORIGINS = ['https://cruizesafaris.com/']
+CSRF_TRUSTED_ORIGINS = ['https://cruizesafaris.com']
 
 # Application definition
 
