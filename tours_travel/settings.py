@@ -52,7 +52,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'base.apps.BaseConfig'
+    'base.apps.BaseConfig',
+    'paypal.standard.ipn',
 ]
 
 SECURE_CROSS_ORIGIN_OPENER_POLICY='same-origin-allow-popups'
@@ -160,5 +161,9 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'wahome4jeff@gmail.com'
 EMAIL_HOST_PASSWORD = 'vnwhvlhbzhhbpdlb'
 EMAIL_USE_TLS = True
+
+PAYPAL_RECEIVER_EMAIL = 'cruizesafaris@business.com'
+
+PAYPAL_TEST = True
 
 django_heroku.settings(locals())

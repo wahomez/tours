@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import RegisterForm
 from .models import *
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
 from django.urls import reverse
 import paypalrestsdk
 import requests
@@ -13,6 +13,14 @@ import json
 import stripe
 from .keys import *
 from .mpesa import ac_token
+from decimal import Decimal
+from paypal.standard.forms import PayPalPaymentsForm
+from django.conf import settings
+from django.http import JsonResponse, HttpResponseServerError
+from datetime import datetime
+from .utils import create_invoice_pdf
+
+
 
 
 stripe.api_key = STRIPE_SECRET_KEY
@@ -63,6 +71,8 @@ def Excursions(request):
         "tours" : tours
     }
     return render(request, "excursions.html", context)
+
+
 
 def destination_page(request, pk):
     tours = Destination.objects.filter(id=pk)
@@ -153,17 +163,64 @@ def logout_user(request):
     messages.success(request, ("You have successfully logged out"))
     return redirect("/")
 
+
 def checkout(request, booking_id):
     booking = Booking.objects.get(id=booking_id)
+    try:
+        payment = Payment.objects.get(booking=booking)
+        payment_date = payment.date
+        print(payment_date)
+    except:
+        print("Error in date")
     checkout = Booking.objects.filter(id=booking_id)
     price = booking.tour.amount
     people = booking.slots
     total = price*people
+    booking = booking.id
+    
+    
+
+    #invoice form data
+    if request.method == "POST":
+        first_name = request.POST["firstName"]
+        last_name = request.POST["lastName"]
+        email = request.POST["email"]
+        tour = request.POST["tour"]
+        tour_date = request.POST["tourDate"]
+        price = price
+        slots = people
+        total = total
+        payment_date = payment_date
+        invoice = Invoice.objects.create(first_name=first_name, last_name=last_name, email=email, tour=tour, tour_date=tour_date, price=price, slots=slots, total=total, payment_date=payment_date)
+        invoice.save()
+        messages.success(request, ("Successfully generated your invoice!"))
+        return redirect("/")
+
+        # #send the invoice to cutomer via email
+        # pdf = create_invoice_pdf(invoice)
+        # email = EmailMessage(
+        #     subject='Invoice from Cruize Beyond and Travels',
+        #     body='Please find attached your invoice from Cruize Beyond Travels',
+        #     from_email=settings.EMAIL_HOST_USER,
+        #     to=[invoice.email],
+        #     cc=[settings.EMAIL_HOST_USER],
+        # )
+        # email.attach(filename='invoice.pdf', content=pdf.getvalue(), mimetype='application/pdf')
+        # return HttpResponse("Invoice successfully sent to email")
+
     context = {
         "checkout" : checkout,
         "total" : total,
+        'booking' : booking,
     }
     return render(request, "checkout.html", context)
+
+def payment_success(request):
+  return render(request, "payment_success.html")
+
+def payment_cancel(request):
+  return render(request, "payment_cancel.html")
+
 
 def mpesa_payment(request):
         pay=Payment.objects.all()
@@ -218,72 +275,28 @@ def mpesa_payment(request):
 
 
 
+paypalrestsdk.configure({
+  "mode": "sandbox", # Set to "live" for production
+  "client_id": CLIENT_ID,
+  "client_secret": CLIENT_SECRET
+})
 
 def payment_execute(request):
-    return HttpResponse("It worked")
-#   payment_id = request.GET.get("paymentId")
-#   print(payment_id)
-#   payer_id = request.GET.get("PayerID")
-#   print(payer_id)
-  
-#   client_id = "AZHgbmEC5kf3RMcOiO94d5QSq7NYgVeb8NhwMbbR2qBgsWUwX2752zKv8FZYgxcpp7AncFVtBabEdXHh"
-#   secret = "EDokXmFS6BnIJRBrGrVbBU5ZbK3Xs4J6K8PtgFDk5zfqqu7Vc0cHB_8Zx7WkJTcK4q5KCCUvO_Tjp60J"
+    body = json.loads(request.body)
+    bookingID = body['bookingID']
+    orderID = body['orderID']
+    amount = body['amount']
+    payerID = body['payerID']
+    paymentID = body['paymentID']
     
-#   access_token = get_access_token(client_id, secret)
+    print('BODY: ', body)
+    print("Transaction Successful")
+    booking = Booking.objects.get(id=bookingID)
+    payment = Payment.objects.create(user=request.user, tour=booking.tour)
+    payment.save()
+    return JsonResponse("Payment Completed!", safe=False)
+    # return redirect(reverse('checkout'), args=[bookingID])
     
-#   payment_details = get_payment_details(access_token, payment_id)
-     
-#     # execute the payment
-#   if 'links' in payment_details:
-#     execute_payment_url = payment_details['links'][1]['href']
-#     # continue with processing payment details
-#   else:
-#       pass
-#     # handle the error
-# #   execute_payment_url = payment_details["links"][1]["href"]
-#   execute_payment_data = {
-#         "payer_id": payer_id
-#     }
-#   execute_payment_response = requests.post(execute_payment_url, data=json.dumps(execute_payment_data),
-#                                              headers={
-#                                                  "Content-Type": "application/json",
-#                                                  "Authorization": f"Bearer {access_token}"
-#                                              })
-#   execute_payment_response_json = execute_payment_response.json()
-    
-#     # check if payment was successful
-#   if execute_payment_response.status_code == 200:
-#         return HttpResponse("Payment was successful!")
-#   else:
-#         error_message = execute_payment_response_json.get("message", "Unknown error")
-#         return HttpResponse(f"Payment failed: {error_message}")
-
-# def get_access_token(client_id, secret):
-#     url = "https://api.sandbox.paypal.com/v1/oauth2/token"
-#     response = requests.post(url, auth=(client_id, secret), data={"grant_type": "client_credentials"})
-#     response_json = response.json()
-#     return response_json["access_token"]
-
-# def get_payment_details(access_token, payment_id):
-#     url = f"https://api.sandbox.paypal.com/v1/payments/payment/{payment_id}"
-#     response = requests.get(url, headers={"Authorization": f"Bearer {access_token}"})
-#     response_json = response.json()
-#     return response_json
-
-#   payment = paypalrestsdk.Payment.find(payment_id)
-
-#   if payment.execute({"payer_id": payer_id}):
-#     # Save the payment details to your database
-#     return redirect(reverse("payment_success"))
-#   else:
-#     return redirect(reverse("payment_cancel"))
-
-def payment_success(request):
-  return render(request, "payment_success.html")
-
-def payment_cancel(request):
-  return render(request, "payment_cancel.html")
-
 
 def charge(request):
     if request.method == 'POST':
@@ -299,4 +312,78 @@ def charge(request):
         return redirect('success')
     
     return render(request, 'checkout.html', {'publishable_key': STRIPE_PUBLIC_KEY})
+
+def create_payment(request, pk):
+    paypalrestsdk.configure(
+        client_id= CLIENT_ID,
+        client_secret= CLIENT_SECRET,
+        mode= "sandbox"
+    )
+    booking = Booking.objects.get(id=pk)
+    tour = booking.tour.name
+    price = booking.tour.amount
+    people = booking.slots
+    total = price*people
+    booking_id = booking.id
+    if booking.paid == True:
+        messages.success(request, ("Your tour is already paid for!"))
+        return redirect("checkout", pk)
+    else:
+        payment = paypalrestsdk.Payment({
+            "intent": "sale",
+            "payer": {
+                "payment_method": "paypal"
+            },
+            "redirect_urls": {
+                "return_url": "http://localhost:8000/paypal/execute_payment/",
+                "cancel_url": "http://localhost:8000/paypal/cancel_payment/"
+            },
+            "transactions": [{
+                "item_list": {
+                    "items": [{
+                        "name": tour,
+                        "sku": booking_id,
+                        "price": price,
+                        "currency": "USD",
+                        "quantity": people
+                    }]
+                },
+                "amount": {
+                    "total": total,
+                    "currency": "USD"
+                },
+                "description": "Transaction description.",
+                "custom": booking_id
+            }]
+        })
+        if payment.create():
+            for link in payment.links:
+                if link.rel == 'approval_url':
+                    return redirect(link.href)
+        else:
+            return HttpResponseServerError
+    
+def execute_payment(request):
+    payment_id = request.GET.get('paymentId')
+    payer_id = request.GET.get('PayerID')
+    
+    payment = paypalrestsdk.Payment.find(payment_id)
+    booking_id = payment.transactions[0].custom
+    print(booking_id)
+    if payment.execute({"payer_id": payer_id}):
+        booking = Booking.objects.get(id=booking_id)
+        payment = Payment.objects.create(user=booking.user, booking=booking)
+        Booking.objects.update(paid=True)
+        payment.save()
+        return redirect("checkout", booking_id)
+
+        # Payment successful, do something here
+        # return HttpResponse("Payment worked")
+    else:
+        # Payment unsuccessful, do something here
+        return HttpResponse("Payment failed")
+
+def cancel_payment(request):
+    return HttpResponse("Payment cancelled")
+
 

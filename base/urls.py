@@ -41,6 +41,10 @@ urlpatterns = [
     path("payment/success/", views.payment_success, name="payment_success"),
     path("payment/cancel/", views.payment_cancel, name="payment_cancel"),
     path('charge/', views.charge, name='charge'),
+    path('paypal-test/<int:pk>', views.create_payment, name='paypal-test'),
+    path('paypal/execute_payment/', views.execute_payment, name='paypal-test/execute'),
+    path('paypal/cancel_payment/', views.cancel_payment, name='paypal-test/cancel'),
+    
     # path('get_access_token/', views.get_access_token, name='get_access_token'),
     # path('get_payment_details/<str:payment_id>/', views.get_payment_details, name='get_payment_details'),
 

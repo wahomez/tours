@@ -225,11 +225,12 @@
                 <div class="col-md-7 col-lg-8">
                     <!--User Details-->
                     <h4 class="mb-3">User Details</h4>
-                    <form class="needs-validation" novalidate>
+                    <form class="needs-validation" novalidate action="" method="POST">
+                        {% csrf_token %}
                         <div class="row g-3">
                             <div class="col-sm-6">
                                 <label for="firstName" class="form-label">First name</label>
-                                <input type="text" class="form-control" id="firstName" placeholder="" value="" required>
+                                <input type="text" class="form-control" name="firstName" placeholder="" value="" required>
                                 <div class="invalid-feedback">
                                     Valid first name is required.
                                 </div>
@@ -237,7 +238,7 @@
 
                             <div class="col-sm-6">
                                 <label for="lastName" class="form-label">Last name</label>
-                                <input type="text" class="form-control" id="lastName" placeholder="" value="" required>
+                                <input type="text" class="form-control" name="lastName" placeholder="" value="" required>
                                 <div class="invalid-feedback">
                                     Valid last name is required.
                                 </div>
@@ -256,7 +257,7 @@
 
                             <div class="col-12">
                                 <label for="email" class="form-label">Email <span class="text-muted"></span></label>
-                                <input type="email" class="form-control" id="email" placeholder="you@example.com" value={{check.user.email}}>
+                                <input type="email" class="form-control" name="email" placeholder="you@example.com" value={{check.user.email}}>
                                 <div class="invalid-feedback">
                                     Please enter a valid email address
                                 </div>
@@ -281,33 +282,28 @@
                         <div class="row g-3">
                             <div class="input-group col-auto">
                                 <label class="input-group-text" for="tourDate">My tours</label>
-                                <input class="form-control" type="text" value="{{check.tour}}" aria-label="tourDate" id="tourDate" readonly>
+                                <input class="form-control" type="text" value="{{check.tour}}" aria-label="tourDate" name="tour" readonly>
                             </div>
                                 <div class="input-group col-auto">
                                     <label class="input-group-text" for="tourDate">Tour date(s)</label>
-                                    <input class="form-control" type="text" value="{{check.tour.duration}}" aria-label="tourDate" id="tourDate" readonly>
+                                    <input class="form-control" type="text" value="{{check.tour.duration}}" aria-label="tourDate" name="tourDate" readonly>
                                 </div>
                                 <div class="input-group col-auto">
                                     <label class="input-group-text" for="tourTime">Tour time(s)</label>
-                                    <input class="form-control" type="text" value="tour time here" aria-label="tourTime" id="tourTime" readonly>
+                                    <input class="form-control" type="text" value="tour time here" aria-label="tourTime" name="tourTime" readonly>
                                 </div>
 
                             <hr class="my-4">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDisabled" disabled>
-                                <label class="form-check-label" for="flexCheckDisabled">
-                                  Completed Payment
-                                </label>
-                              </div>
+                            
                                                     
 
-                        <button class="w-100 btn btn-success btn-lg mb-5" type="submit">Complete Checkout</button>
+                        
 
                         <h4 class="mb-3">Payment</h4>
 
                         <div class="row justify-content-center my-3 gy-3">
                             <div class="col-auto">
-                                <a class="btn btn-outline-info" role="button" data-bs-toggle="modal" data-bs-target="#paypalModal">Paypal</a>
+                                <a href="{% url 'paypal-test' booking %}" class="btn btn-outline-info" role="button" >Paypal</a>
                             </div>
                             <div class="col-auto">
                                 <a class="btn btn-outline-info" role="button" data-bs-toggle="modal" data-bs-target="#stripeModal" >Visa/Mastercard</a>
@@ -321,50 +317,27 @@
                             </div>
                         </div>
                         </div>
+                        <hr class="my-4">
+                        <div class="form-check">
+                            {% if check.paid == True %}
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckCheckedDisabled" checked disabled>
+                            {% else %}
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDisabled" disabled>
+                            {% endif %}
+                            
+                            <label class="form-check-label" for="flexCheckDisabled">
+                              Completed Payment
+                            </label>
+                        </div>
 
                         <hr class="my-4">
 
-                        <!-- Set up a container element for the button -->
-                        
-                        
-                        <script>
-                            // Define the PayPal button element
-                            var paypalButton = document.getElementById("paypal-button-container");
-
-                            // Define the PayPal SDK client
-                            paypal.Buttons({
-
-                                style:{
-                                    color:'gold',
-                                    shape: 'pill',
-
-                                },
-
-
-                            createOrder: function(data, actions) {
-                                // Set up the payment details
-                                return actions.order.create({
-                                purchase_units: [{
-                                    amount: {
-                                    value: {{total}}
-                                    }
-                                }]
-                                });
-                            },
-                            onApprove: function(data, actions) {
-                                // Capture the payment when the user approves it
-                                return actions.order.capture().then(function(details) {
-                                // Redirect the user to a success page
-                                window.location.href = '/payment/execute/?paymentId=' + data.orderID + '&PayerID=' + data.payerID;
-                                });
-                            },
-                            onCancel: function(data) {
-                                // Redirect the user to a cancel page
-                                window.location.href = "/payment/cancel/";
-                            }
-                            }).render(paypalButton);
-
-                        </script>
+                        {% if check.paid == True %}
+                            <button class="w-100 btn btn-success btn-lg mb-5" type="submit">Complete Checkout</button>
+                        {% else %}
+                            <button class="w-100 btn btn-success btn-lg mb-5" type="submit" disabled>Complete Checkout</button>
+                            
+                        {% endif %}
                         
                         {% comment %} <button class="w-100 btn btn-success btn-lg mb-5" type="submit">Complete Checkout</button> {% endcomment %}
                     </form>

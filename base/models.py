@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import  AbstractUser
 from django.db.models.signals import post_save
+from django.utils import timezone
+import uuid
 
 # Create your models here.
 class User(AbstractUser):
@@ -71,10 +73,26 @@ class Booking(models.Model):
     
 class Payment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    tour = models.ForeignKey(Destination, on_delete=models.SET_NULL, null=True)
-    date = models.DateTimeField(auto_now_add=True)
+    booking = models.ForeignKey(Booking, on_delete=models.SET_NULL, null=True, related_name="payment_booking")
+    date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return str(self.user) + str("-") + str(self.tour)
+        return str(self.booking)
+    
+class Invoice(models.Model):
+    invoice_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    first_name = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=200)
+    email = models.EmailField()
+    tour = models.CharField(max_length=200)
+    tour_date = models.CharField(max_length=200)
+    price = models.IntegerField()
+    slots = models.IntegerField()
+    total = models.IntegerField()
+    payment_date = models.DateTimeField()
+
+    def __str__(self):
+        return str(self.invoice_id)
+
 
 

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
-from .models import Profile, Destination, User, Booking, Payment, Review
+from .models import Profile, Destination, User, Booking, Payment, Review, Invoice
 
 #Unregister Groups
 admin.site.unregister(Group)
@@ -12,3 +12,4 @@ admin.site.register(Destination)
 admin.site.register(Booking)
 admin.site.register(Review)
 admin.site.register(Payment)
+admin.site.register(Invoice)
