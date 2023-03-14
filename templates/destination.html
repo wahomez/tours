@@ -50,52 +50,81 @@
     <br>
     <!--booking-->
     <div class="justify-content-center" id="destinationBooking">
-        <form class="row justify-content-center g-3" method="POST">
+        <form class="row justify-content-center g-3 needs-validation" method="POST" novalidate>
             {% csrf_token %}
             {% if tour.duration == 1 %}
-                <div class=" col-3">
+                <div class=" col-sm-6">
                     <!--<label for="datePickerFrom" class="">From</label>-->
                     <div class="input-group">
                         <div class="input-group-text" id="basic-addon2">Date</div>
-                        <input type="date" class="form-control" id="datePickerTo" value="">
+                        <input type="date" class="form-control" id="datePickerTo" value="" required>
+                        <div class="valid-feedback">
+                            All good!
+                        </div>
+                        <div class="invalid-feedback">
+                            Please select a date
+                        </div>
                     </div>
                 </div>
             {% else %}
-                <div class=" col-3">
+                <div class=" col-sm-6">
                     <!--<label for="datePickerFrom" class="">From</label>-->
                     <div class="input-group">
                         <div class="input-group-text" id="basic-addon2">From</div>
-                        <input type="date" class="form-control" id="datePickerTo" value="">
+                        <input type="date" class="form-control" id="datePickerTo" value="" required>
+                        <div class="valid-feedback">
+                            All good!
+                        </div>
+                        <div class="invalid-feedback">
+                            Please select a date
+                        </div>
                     </div>
                 </div>
-                <div class="col-3">
+                <div class="col-sm-6">
                     <!--<label for="datePickerTo" class="">To</label>-->
-                    
-                    
                         <div class="input-group">
                             <div class="input-group-text" id="basic-addon1">To</div>
-                            <input type="date" class="form-control" id="datePickerFrom" value="">
+                            <input type="date" class="form-control" id="datePickerFrom" value="" required>
+                            <div class="valid-feedback">
+                                All good!
+                            </div>
+                            <div class="invalid-feedback">
+                                Please select a date
+                            </div>
                         </div>
-                    
                 </div>
             {% endif %}
-            
 
-            <div class="col-auto" >
-                <!--<label for="participants" class="visually-hidden">Password</label>-->
-                <!--<input type="password" class="form-control" id="participants" placeholder="no. of people">-->
-                <select class="form-select" aria-label="participants" name="slots">
-                    <option selected>No. of people?</option>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <!--<option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>-->
-                </select>
+            <div class="col-sm-6" >
+                <div class="input-group">
+                    <div class="input-group-text" id="basic-addon3">Participants</div>
+                    <!--<label for="participants" class="input-group-text">Participants</label>-->
+                    <input type="number" class="form-control" id="participants" placeholder="no. of people" name="slots" required>
+                    <div class="valid-feedback">
+                        All good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Choose number of people
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="input-group">
+                    <div class="input-group-text">Time</div>
+                    <select class="form-select" aria-label="selectTime" required>
+                        <option value="" selected>Choose time</option>
+                        <option value="optionOne">Option one</option>
+                        <option value="optionTwo">Option two</option>
+                        <option value="optionThree">Option three</option>
+                    </select>
+                    <div class="valid-feedback">
+                        All good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Choose time of tour
+                    </div>
+                </div>
             </div>
             <div class="col-auto">
                 <!--<button type="submit" class="btn btn-outline-success mb-3">Book Now</button>-->
@@ -108,11 +137,17 @@
     <br>
             <div class="row justify-content-center">
                 <div class="col-sm-6">
-                    <form method="POST" action= "{%url "review" %}">
+                    <form class="needs-validation" method="POST" action= "{%url "review" %}" novalidate>
                         {% csrf_token %}
                         <div class="form-floating" data-bs-theme="dark">
-                            <textarea class="form-control" placeholder="Leave a review here" name="comment" style="height: 100px" id="destinationReview"></textarea>
+                            <textarea class="form-control" placeholder="Leave a review here" name="comment" style="height: 100px" id="destinationReview" required></textarea>
                             <label for="destinationReview">Review</label>
+                            <div class="valid-feedback">
+                                All good!
+                            </div>
+                            <div class="invalid-feedback">
+                                Review cannot be blank
+                            </div>
                             <br>
                             <button type="submit" class="btn btn-outline-primary">Submit</button>
                         </div>
