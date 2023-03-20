@@ -13,16 +13,16 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form method="POST" action="{% url "mpesa" %}">
+                        <form method="POST" action="{% url "mpesa" booking %}">
                             {%csrf_token%}
                             <div class="input-group mb-3">
                                 <label class="input-group-text" for="tourDate">Amount</label>
-                                <input class="form-control" type="text" value="{{total}}" aria-label="tourDate" id="tourDate" name="amount" readonly>
+                                <input class="form-control" type="text" value="{{total}}" aria-label="tourDate" name="amount" readonly>
                             </div>
                             <div class="input-group mb-3">
                                 <button class="btn btn-outline-info" type="button" aria-expanded="false">Phone No.</button>
                                 <button class="btn btn-outline-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false">+254</button>
-                                <input type="number" class="form-control no-arrow" aria-label="" placeholder="712345678" name="number">
+                                <input type="number" class="form-control no-arrow" aria-label="" placeholder="712345678" name="mobile">
                                 <div id="phoneNoHelp" class="form-text">You will receive an M-Pesa pop-up on your phone. Please enter your M-Pesa pin to complete the transaction</div>
                             </div>
                         <div class="modal-footer">

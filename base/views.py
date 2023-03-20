@@ -19,6 +19,8 @@ from django.conf import settings
 from django.http import JsonResponse, HttpResponseServerError
 from datetime import datetime
 from .utils import create_invoice_pdf
+from requests.auth import HTTPBasicAuth
+import base64
 
 
 
@@ -222,81 +224,66 @@ def payment_cancel(request):
   return render(request, "payment_cancel.html")
 
 
-def mpesa_payment(request):
-        pay=Payment.objects.all()
-        if request.method == "POST":
-            Number = request.POST['number']
-            Amount = request.POST['amount']
-    #Mpesa API
-        token = ac_token()
-        headers = {
+def mpesa_payment(request, pk):
+    booking = Booking.objects.get(id=pk)
+    #get payment details from form
+    if request.method == "POST":
+        mobile = request.POST["mobile"]
+        amount = request.POST["amount"]
+        print("KEY:", pk)
+        # order = Order.objects.get(order_id=pk)
+        booking_id = booking.id
+        print("ID:", booking_id)
+    #get access token
+    auth_url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
+    response = requests.get(auth_url, auth=HTTPBasicAuth(CONSUMER_KEY, CONSUMER_SECRET))
+    access_token = response.json()["access_token"]
+
+    #get payment details
+    # mobile = 254748373873
+    # amount = 100
+    # description = "Product 1"
+
+    #create payment payload
+    headers = {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer %s' %token
-        }
-        payload = {
-            "BusinessShortCode": 174379,
-            "Password": "MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMjMwMTA5MTI1NjU1",
-            "Timestamp": "20230109125655",
-            "TransactionType": "CustomerPayBillOnline",
-            "Amount": Amount,
-            "PartyA": "254" + Number,
-            "PartyB": 174379,
-            "PhoneNumber": "254" + Number,
-            "CallBackURL": 'https://api.darajambili.com/express-payment',
-            "AccountReference": "Cruizesafari",
-            "TransactionDesc": "Payment of X"
-        }
+        'Authorization': 'Bearer %s' % access_token
+    }
 
-        response = requests.request("POST", 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest', headers = headers, json = payload)
-        # print(response.text.encode('utf8'))
-        code = response.json()
-        try:
-            if code['ResponseCode'] == '0':
-                print("Successful!. Complete the pin prompt sent to your device")
-                # payment = Payment.objects.update(Successful=True)
-                # payment.save()
-            else:
-                print("Failed! Kindly try again.")
-        except:
-            'Message didnt work'
-        # return code()
-
-        messages.success(request, ("Your payment request has been sent successful!"))
-        return redirect('/')
-
-# paypalrestsdk.configure({
-#   "mode": "sandbox", # Set to "live" for production
-#   "client_id": "AZHgbmEC5kf3RMcOiO94d5QSq7NYgVeb8NhwMbbR2qBgsWUwX2752zKv8FZYgxcpp7AncFVtBabEdXHh",
-#   "client_secret": "EDokXmFS6BnIJRBrGrVbBU5ZbK3Xs4J6K8PtgFDk5zfqqu7Vc0cHB_8Zx7WkJTcK4q5KCCUvO_Tjp60J"
-# })
-
-# Get payment details
-# payment_id = "your_payment_id"
-
-
-
-paypalrestsdk.configure({
-  "mode": "sandbox", # Set to "live" for production
-  "client_id": CLIENT_ID,
-  "client_secret": CLIENT_SECRET
-})
-
-def payment_execute(request):
-    body = json.loads(request.body)
-    bookingID = body['bookingID']
-    orderID = body['orderID']
-    amount = body['amount']
-    payerID = body['payerID']
-    paymentID = body['paymentID']
+    payload = {
+        "BusinessShortCode": 174379,
+        "Password": "MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMjMwMzIwMjM1NTA2",
+        "Timestamp": "20230320235506",
+        "TransactionType": "CustomerPayBillOnline",
+        "Amount": amount,
+        "PartyA": "254" + mobile,
+        "PartyB": 174379,
+        "PhoneNumber": "254" + mobile,
+        "CallBackURL": "https://api.darajambili.com/express-payment",
+        "AccountReference": "CompanyXLTD",
+        "TransactionDesc": "Payment of X" 
+    }
+    #stk push api
+    response = requests.request("POST", 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest', headers = headers, json = payload)
     
-    print('BODY: ', body)
-    print("Transaction Successful")
-    booking = Booking.objects.get(id=bookingID)
-    payment = Payment.objects.create(user=request.user, tour=booking.tour)
-    payment.save()
-    return JsonResponse("Payment Completed!", safe=False)
-    # return redirect(reverse('checkout'), args=[bookingID])
-    
+    code = response.json()
+    print(code)
+
+    try:
+        if code["ResponseCode"] == '0':
+            print("Complete pin prompt sent to your device to complete payment!")
+            booking = Booking.objects.get(id=booking_id)
+            payment = Payment.objects.create(user=booking.user, booking=booking)
+            Booking.objects.update(paid=True)
+            payment.save()
+            messages.success(request, ("Payment successfull"))
+            return redirect("checkout", booking_id)
+        else:
+            print("Failed transaction. Try again!")
+    except:
+        print("Code didn't work")
+    # print("Token:", access_token)
+    return HttpResponse("We are good")
 
 def charge(request):
     if request.method == 'POST':
