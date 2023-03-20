@@ -53,7 +53,7 @@
         <form class="row justify-content-center g-3 needs-validation" method="POST" novalidate>
             {% csrf_token %}
             {% if tour.duration == 1 %}
-                <div class=" col-sm-6">
+                <div class=" col-sm-3">
                     <!--<label for="datePickerFrom" class="">From</label>-->
                     <div class="input-group">
                         <div class="input-group-text" id="basic-addon2">Date</div>
@@ -67,7 +67,7 @@
                     </div>
                 </div>
             {% else %}
-                <div class=" col-sm-6">
+                <div class=" col-sm-3">
                     <!--<label for="datePickerFrom" class="">From</label>-->
                     <div class="input-group">
                         <div class="input-group-text" id="basic-addon2">From</div>
@@ -80,7 +80,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6">
+                <div class="col-sm-3">
                     <!--<label for="datePickerTo" class="">To</label>-->
                         <div class="input-group">
                             <div class="input-group-text" id="basic-addon1">To</div>
@@ -95,21 +95,7 @@
                 </div>
             {% endif %}
 
-            <div class="col-sm-6" >
-                <div class="input-group">
-                    <div class="input-group-text" id="basic-addon3">Participants</div>
-                    <!--<label for="participants" class="input-group-text">Participants</label>-->
-                    <input type="number" class="form-control" id="participants" placeholder="no. of people" name="slots" required>
-                    <div class="valid-feedback">
-                        All good!
-                    </div>
-                    <div class="invalid-feedback">
-                        Choose number of people
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-sm-6">
+            <div class="col-sm-3">
                 <div class="input-group">
                     <div class="input-group-text">Time</div>
                     <select class="form-select" aria-label="selectTime" required>
@@ -126,12 +112,37 @@
                     </div>
                 </div>
             </div>
+            <div class="col-sm-3" >
+                <div class="input-group">
+                    <div class="input-group-text" id="basic-addon3">Participants</div>
+                    <!--<label for="participants" class="input-group-text">Participants</label>-->
+                    <input type="number" class="form-control" id="participants" placeholder="no. of people" name="slots" required>
+                    <div class="valid-feedback">
+                        All good!
+                    </div>
+                    <div class="invalid-feedback">
+                        Choose number of people
+                    </div>
+                </div>
+            </div>
             <div class="col-auto">
                 <!--<button type="submit" class="btn btn-outline-success mb-3">Book Now</button>-->
                 <button class="btn btn-outline-success" type=submit >Book Now</button>
             </div>
-            <div class="row justify-content-center my-3">
-            </div>
+
+            <!--alert templates-->
+            <!--<div class="row justify-content-center my-3">
+                <div class="col-auto">
+                    <p>Alert template</p>
+                    <div class="alert alert-danger" role="alert">
+                        A simple danger alert—check it out!
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <div id="liveAlertPlaceholder"></div>
+                    <button type="button" class="btn btn-primary" id="liveAlertBtn">Show live alert</button>
+                </div>
+            </div>-->
         </form>
     </div>
     <br>
