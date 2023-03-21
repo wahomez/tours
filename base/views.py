@@ -16,7 +16,7 @@ from .mpesa import ac_token
 from decimal import Decimal
 from paypal.standard.forms import PayPalPaymentsForm
 from django.conf import settings
-from django.http import JsonResponse, HttpResponseServerError
+from django.http import JsonResponse, HttpResponseServerError, HttpResponseBadRequest
 from datetime import datetime
 from .utils import create_invoice_pdf
 from requests.auth import HTTPBasicAuth
@@ -232,6 +232,8 @@ def mpesa_payment(request, pk):
         amount = request.POST["amount"]
         print("KEY:", pk)
         # order = Order.objects.get(order_id=pk)
+        tour = booking.tour.name
+        print("Tour:", tour)
         booking_id = booking.id
         print("ID:", booking_id)
     #get access token
@@ -259,9 +261,9 @@ def mpesa_payment(request, pk):
         "PartyA": "254" + mobile,
         "PartyB": 174379,
         "PhoneNumber": "254" + mobile,
-        "CallBackURL": "https://api.darajambili.com/express-payment",
-        "AccountReference": "CompanyXLTD",
-        "TransactionDesc": "Payment of X" 
+        "CallBackURL": "https://cruizesafaris.com/mpesa-callback/",
+        "AccountReference": "Cruize Beyond",
+        "TransactionDesc": tour
     }
     #stk push api
     response = requests.request("POST", 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest', headers = headers, json = payload)
@@ -277,13 +279,33 @@ def mpesa_payment(request, pk):
             Booking.objects.update(paid=True)
             payment.save()
             messages.success(request, ("Payment successfull"))
-            return redirect("checkout", booking_id)
+            return redirect("mpesa-callback", booking_id)
         else:
             print("Failed transaction. Try again!")
     except:
         print("Code didn't work")
     # print("Token:", access_token)
     return HttpResponse("We are good")
+
+def mpesa_callback(request, pk):
+    booking = Booking.objects.get(id=pk)
+    tour = booking.tour
+    print(tour)
+    if request.method == 'POST':
+        # Extract payment details from the request
+        transaction_reference = request.POST.get('TransactionReference')
+        amount = request.POST.get('Amount')
+        tour = request.POST.get("TransactionDesc")
+        # Validate the payment
+        print("Amount:", amount)
+        print("Reference:", transaction_reference)
+        # Update your application's records
+        # ...
+        # Return a response to Mpesa
+        return HttpResponse('OK')
+    else:
+        return HttpResponseBadRequest('Invalid request method')
+
 
 def charge(request):
     if request.method == 'POST':
