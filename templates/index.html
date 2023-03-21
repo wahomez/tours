@@ -44,17 +44,29 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form method="POST" action={% url 'login'%}>
+                        <form class="needs-validation" method="POST" action={% url 'login'%} novalidate>
                             {% csrf_token %}
                             <label for="userEmail" class="form-label">Email Address</label>
                             <div class="">
                                 <!--<span class="input-group-text" id="usernameHelp">@</span>-->
-                                <input type="email" class="form-control" name="email" aria-describedby="userEmailHelp">
+                                <input type="email" class="form-control" name="email" aria-describedby="userEmailHelp" required>
+                                <div class="valid-feedback">
+                                    All good!
+                                </div>
+                                <div class="invalid-feedback">
+                                    Please enter an email
+                                </div>
                             </div>
                             <br>
                             <div class="">
                                 <label for="userPassword" class="form-label">Password</label>
-                                <input type="password" class="form-control" name="password">
+                                <input type="password" class="form-control" name="password" required>
+                                <div class="valid-feedback">
+                                    All good!
+                                </div>
+                                <div class="invalid-feedback">
+                                    Please enter a password
+                                </div>
                             </div>
                             
                             <div class="modal-footer">
