@@ -8,31 +8,20 @@
     </div>
   </div>
   <div class="row justify-content-center text-center">
-    <div class="col-sm-3 m-2">
-      <div class="card">
-        <img src="../images/ngonghills1.jpg" class="card-img-top img-fluid" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Ngong Hills Tour and Adventure</h5>
-          <p class="card-text">
-            Climb up and down the beautiful hills of Ngong, on one side is a drop of more than 1000m into the rift valley, on the other is Nairobi National park, and on another is Nairobi.
-          </p>
-          <a href="{% url 'destination' %}" class="btn btn-outline-light">View tour</a>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-3 m-2">
-      <div class="card">
-        <img src="../images/nairobi2.jpg" class="card-img-top img-fluid" alt="...">
-        <div class="card-body">
-          <h5 class="card-title">Nairobi Walking City Tour</h5>
-          <p class="card-text">
-            Experience the lifestyle of the people of the green city, vibrant yet calm, old and young, from every corner of the country and world.
-            Historical buildings and monuments, modern architecture, experience it all.
-          </p>
-          <a href="#" class="btn btn-outline-light">View tour</a>
-        </div>
-      </div>
-    </div>
+    {% for tour  in tours %}
+            <div class="col-sm-3 m-2">
+                <div class="card">
+                    <img src="{{tour.poster.url}}" class="card-img-top img-fluid" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{{tour.name}}</h5>
+                        <p class="card-text">
+                            {{tour.description}}
+                        </p>
+                        <a href="{% url 'destination' tour.id %}" class="btn btn-outline-light">View tour</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
 </div>
 </div>
 

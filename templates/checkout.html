@@ -286,11 +286,11 @@
                             </div>
                                 <div class="input-group col-auto">
                                     <label class="input-group-text" for="tourDate">Tour date(s)</label>
-                                    <input class="form-control" type="text" value="{{check.tour.duration}}" aria-label="tourDate" name="tourDate" readonly>
+                                    <input class="form-control" type="text" value="{{check.start_date}} {% if check.end_date%}- {{check.end_date}} {% endif %}" aria-label="tourDate" name="tourDate" readonly>
                                 </div>
                                 <div class="input-group col-auto">
                                     <label class="input-group-text" for="tourTime">Tour time(s)</label>
-                                    <input class="form-control" type="text" value="tour time here" aria-label="tourTime" name="tourTime" readonly>
+                                    <input class="form-control" type="text" value="{{check.tour_time}}" aria-label="tourTime" name="tourTime" readonly>
                                 </div>
 
                             <hr class="my-4">

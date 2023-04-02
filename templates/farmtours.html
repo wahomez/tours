@@ -8,30 +8,20 @@
         </div>
     </div>
     <div class="row justify-content-center text-center">
-        <div class="col-sm-3 m-2">
-            <div class="card">
-                <img src="../images/coffee2.jpg" class="card-img-top img-fluid" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Coffee Farm Tour</h5>
-                    <p class="card-text">
-                        Perfectly aligned coffee trees, gloriously giving her beans into the heart-warming process of coffee making. See it, experience it all!
-                    </p>
-                    <a href="{% url 'destination' %}" class="btn btn-outline-light">View tour</a>
+        {% for tour  in tours %}
+            <div class="col-sm-3 m-2">
+                <div class="card">
+                    <img src="{{tour.poster.url}}" class="card-img-top img-fluid" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">{{tour.name}}</h5>
+                        <p class="card-text">
+                            {{tour.description}}
+                        </p>
+                        <a href="{% url 'destination' tour.id %}" class="btn btn-outline-light">View tour</a>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-sm-3 m-2">
-            <div class="card">
-                <img src="../images/tea1.jpg" class="card-img-top img-fluid" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Kiambethu Tea Farm Tour</h5>
-                    <p class="card-text">
-                        Dive into the vast tea plantation, fetch some tea leaves even and experience the magic of the beverage the world wakes up to.
-                    </p>
-                    <a href="#" class="btn btn-outline-light">View tour</a>
-                </div>
-            </div>
-        </div>
+        {% endfor %}
 </div>
 </div>
 

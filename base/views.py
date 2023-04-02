@@ -14,11 +14,12 @@ import stripe
 from .keys import *
 from .mpesa import ac_token
 from decimal import Decimal
-from paypal.standard.forms import PayPalPaymentsForm
+# from paypal.standard.forms import PayPalPaymentsForm
 from django.conf import settings
 from django.http import JsonResponse, HttpResponseServerError, HttpResponseBadRequest
 from datetime import datetime
-from .utils import create_invoice_pdf
+# from .utils import create_invoice_pdf
+from django.views.decorators.csrf import csrf_exempt
 from requests.auth import HTTPBasicAuth
 import base64
 
@@ -80,6 +81,8 @@ def destination_page(request, pk):
     tours = Destination.objects.filter(id=pk)
     destination = Destination.objects.get(id=pk)
     review = Review.objects.filter(destination_review=pk)
+    duration = destination.duration
+    print("Duration:", duration)
     booking = Booking.objects.all()
    
 
@@ -87,8 +90,17 @@ def destination_page(request, pk):
 
     if request.method == "POST":
         slots = request.POST['slots']
+        tour_time = request.POST['tour-time']
+        
         tour = destination
-        booking = Booking.objects.create(user=request.user, tour=tour, slots=slots)
+        if duration == 1:
+            start_date = request.POST['start-date']
+            end_date = None
+        else:
+            start_date = request.POST['start-date']
+            end_date = request.POST['end-date']
+            
+        booking = Booking.objects.create(user=request.user, tour=tour, slots=slots, start_date=start_date, end_date=end_date, tour_time=tour_time)
         booking.save()
         messages.success(request, "You have booked a tour successfully. Proceed to checkout!")
         return redirect("checkout", booking_id=booking.id)
@@ -103,13 +115,25 @@ def Gallery(request):
     return render(request, "gallery.html")
 
 def Safari(request):
-    return render(request, "safaritours.html")
+    tours = Destination.objects.filter(category="Safari Tours")
+    context = {
+        "tours" : tours
+    }
+    return render(request, "safaritours.html", context)
 
 def Farm(request):
-    return render(request, "farmtours.html")
+    tours = Destination.objects.filter(category="Farm Tours")
+    context = {
+        "tours" : tours
+    }
+    return render(request, "farmtours.html", context)
 
 def hikingAdventure(request):
-    return render(request, "hikingadventuretours.html")
+    tours = Destination.objects.filter(category="Hiking and Adventures Tours")
+    context = {
+        "tours" : tours
+    }
+    return render(request, "hikingadventuretours.html", context)
 
 
 def Review_tour(request):
@@ -287,18 +311,16 @@ def mpesa_payment(request, pk):
     # print("Token:", access_token)
     return HttpResponse("We are good")
 
+@csrf_exempt
 def mpesa_callback(request, pk):
     booking = Booking.objects.get(id=pk)
     tour = booking.tour
     print(tour)
-    if request.method == 'POST':
+    if request.method == "POST":
         # Extract payment details from the request
-        transaction_reference = request.POST.get('TransactionReference')
-        amount = request.POST.get('Amount')
-        tour = request.POST.get("TransactionDesc")
+        callback_data = request.body.decode('utf-8')
         # Validate the payment
-        print("Amount:", amount)
-        print("Reference:", transaction_reference)
+        print(callback_data)
         # Update your application's records
         # ...
         # Return a response to Mpesa
