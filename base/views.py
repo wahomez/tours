@@ -302,7 +302,7 @@ def mpesa_payment(request, pk):
             "PartyA": "254" + mobile,
             "PartyB": 174379,
             "PhoneNumber": "254" + mobile,
-            "CallBackURL": "https://cruizesafaris.com/mpesa-callback/",
+            "CallBackURL": "https://cruizesafaris.com/callback/",
             "AccountReference": "Cruize Beyond",
             "TransactionDesc": tour
         }
@@ -319,7 +319,7 @@ def mpesa_payment(request, pk):
                 payment = Payment.objects.create(user=booking.user, booking=booking)
                 Booking.objects.update(paid=True)
                 payment.save()
-                messages.success(request, ("Payment was successfull. Complete Checkout!"))
+                messages.success(request, ("Payment request was sent successfully!"))
                 return redirect("checkout", booking_id)
             else:
                 print("Failed transaction. Try again!")
@@ -329,21 +329,56 @@ def mpesa_payment(request, pk):
         return HttpResponse("We are good")
 
 @csrf_exempt
-def mpesa_callback(request, pk):
-    booking = Booking.objects.get(id=pk)
-    tour = booking.tour
-    print(tour)
-    if request.method == "POST":
-        # Extract payment details from the request
-        callback_data = request.body.decode('utf-8')
-        # Validate the payment
-        print(callback_data)
-        # Update your application's records
-        # ...
-        # Return a response to Mpesa
-        return HttpResponse('OK')
-    else:
-        return HttpResponseBadRequest('Invalid request method')
+def daraja_callback(request):
+    print("Working!")
+    # Extract relevant data from the callback
+    transaction_id = request.POST.get('TransID', '')
+    transaction_status = request.POST.get('TransStatus', '')
+
+    try:
+        if request.method == 'POST':
+            # Retrieve the JSON data from the request body
+            callback_data = json.loads(request.body)
+
+            # Check if the transaction was successful
+            if callback_data.get('Body.stkCallback.ResultCode') == '0':
+                # Handle the successful transaction
+                print("Callback Data:", callback_data)
+                messages.success(request, ("Payment was successfull. Complete Checkout!"))
+
+                # Return a success response
+                response_data = {
+                    'ResultCode': 0,
+                    'ResultDesc': 'Success'
+                }
+                return HttpResponse(json.dumps(response_data), content_type='application/json')
+            else:
+                # Handle the failed transaction
+                # ...
+                messages.success(request, ("Payment was not successfull. Try again!"))
+                print("Payment Cancelled!")
+
+                # Return an error response
+                response_data = {
+                    'ResultCode': 1,
+                    'ResultDesc': 'Error'
+                }
+                return HttpResponse(json.dumps(response_data), content_type='application/json')
+
+        # Return a bad request response if the request method is not POST
+        response_data = {
+            'ResultCode': 1,
+            'ResultDesc': 'Invalid request method'
+        }
+        return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
+    except:
+        print("Error!")
+
+    # Perform any necessary actions, such as updating your database
+    # ...
+
+    # Return a response to Daraja
+    return HttpResponse(status=200)
 
 
 def charge(request):
