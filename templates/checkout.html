@@ -17,7 +17,7 @@
                             {%csrf_token%}
                             <div class="input-group mb-3">
                                 <label class="input-group-text" for="tourDate">Amount</label>
-                                <input class="form-control" type="text" value="{{total}}" aria-label="tourDate" name="amount" readonly>
+                                <input class="form-control" type="text" value="{{converted_total}}" aria-label="tourDate" name="amount" readonly>
                             </div>
                             <div class="input-group mb-3">
                                 <button class="btn btn-outline-info" type="button" aria-expanded="false">Phone No.</button>
@@ -101,9 +101,9 @@
                 <!--payment details sidebar 1-->
                 <div class="col-md-5 col-lg-4 order-md-last">
                     <h4 class="d-flex justify-content-between align-items-center mb-3" id="tourDetailsHeader">
-                        <span class="text-success">Payment details</span>
+                        <span class="text-success">Booking Summary</span>
                         
-                        <!--<span class="badge bg-primary rounded-pill">3</span>-->
+                        {% comment %} <span class="badge bg-primary rounded-pill">3</span>--> {% endcomment %}
                         <!--<button type="button" class="badge bg-primary rounded-pill" data-bs-toggle="popover"
                                 data-bs-title="Popover title" data-bs-placement="top" data-bs-content="And here's some amazing content. It's very engaging. Right?">3 tours</button>-->
                         {% comment %} <a tabindex="0" class="badge bg-success rounded-pill" role="button" data-bs-toggle="popover" data-bs-trigger="focus, hover"
@@ -150,7 +150,7 @@
                                 <h6 class="my-0">Discount</h6>
                                 <small>Because we like you</small>
                             </div>
-                            <span class="text-success">−$20</span>
+                            <span class="text-success">−${{check.tour.discount}}</span>
                         </li>
                         <li class="list-group-item d-flex justify-content-between">
                             <span>Total (USD)</span>

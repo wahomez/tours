@@ -22,6 +22,7 @@ from datetime import datetime
 from django.views.decorators.csrf import csrf_exempt
 from requests.auth import HTTPBasicAuth
 import base64
+from google_currency import convert
 
 
 
@@ -87,7 +88,7 @@ def Excursions(request):
 def destination_page(request, pk):
     tours = Destination.objects.filter(id=pk)
     destination = Destination.objects.get(id=pk)
-    review = Review.objects.filter(destination_review=pk)
+    review = Review.objects.filter(tour=pk)
     duration = destination.duration
     print("Duration:", duration)
     booking = Booking.objects.all()
@@ -114,7 +115,8 @@ def destination_page(request, pk):
 
     context = {
         "tours" : tours,
-        "review" : review
+        "review" : review,
+        
     }
     return render(request, "destination.html", context)
 
@@ -143,15 +145,18 @@ def hikingAdventure(request):
     return render(request, "hikingadventuretours.html", context)
 
 
-def Review_tour(request):
+def Review_tour(request, pk):
+    tour = Destination.objects.get(id=pk)
+    print("Toour: ", tour)
     tour_review = Review.objects.all
     if request.method == 'POST':
         user = request.user
+        tour = tour
         comment = request.POST['comment']
-        tour_review = Review.objects.create(user=user, comment=comment)
+        tour_review = Review.objects.create(user=user,tour=tour, comment=comment)
         tour_review.save()
         messages.success(request, ("Review sent successfully"))
-        return redirect("/")
+        return redirect("destination", pk )
     else:
 
         context = {
@@ -213,10 +218,18 @@ def checkout(request, booking_id):
         print("Error in date")
     checkout = Booking.objects.filter(id=booking_id)
     price = booking.tour.amount
+    discount = booking.tour.discount
+    discounted_total = price-discount
     people = booking.slots
-    total = price*people
-    booking = booking.id
+    total = discounted_total*people
+    json_string = convert('usd', 'kes', total)
+    convert_total = json.loads(json_string)
+    converted_total = convert_total["amount"]
+    # total = convert_total["amount"]
     
+    booking = booking.id
+    # print("Final dict: ", convert_total)
+    # print("Final price: ", final_total)
     
 
     #invoice form data
@@ -250,8 +263,9 @@ def checkout(request, booking_id):
     context = {
         "checkout" : checkout,
         "total" : total,
-        'booking' : booking,
-    }
+        'booking' : booking, 
+        "converted_total" : converted_total
+        }
     return render(request, "checkout.html", context)
 
 def payment_success(request):

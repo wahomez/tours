@@ -148,7 +148,7 @@
     <br>
             <div class="row justify-content-center">
                 <div class="col-sm-6">
-                    <form class="needs-validation" method="POST" action= "{%url "review" %}" novalidate>
+                    <form class="needs-validation" method="POST" action= "{%url "review" tour.id %}" novalidate>
                         {% csrf_token %}
                         <div class="form-floating" data-bs-theme="dark">
                             <textarea class="form-control" placeholder="Leave a review here" name="comment" style="height: 100px" id="destinationReview" required></textarea>
@@ -168,13 +168,32 @@
         </br>
        <div class="container">
             <h4><center><strong>REVIEWS<strong></center><h4>
+            {% if review %}
+            <div class="row row-cols-1 row-cols-md-3 g-4">
             {% for review in review%}
-            
-                <h6><strong>User:</strong> {{review.user|upper}}</h6>
-                <h6><strong>Review:</strong> {{review.comment}}</h6>
-                <h6><strong>Date Reviewed:</strong> {{review.uploaded_date}}</h6>
+                
+                    <div class="col">
+                        <div class="card">
+                            <div class="card-header">
+                                <center><h5>Reviewed by {{review.user|title}}</h5></center>
+                            </div>
+                            <div class="card-body">
+                                <h6>{{review.comment}}</h6>
+                            </div>
+                            <div class="card-footer text-body-secondary">
+                                <h6>On {{review.uploaded_date}}</h6>
+                            </div>
+                        </div>
+                    </div>
+                
             <br>
             {% endfor %}
+            </div>
+            {% else %}
+                <h6>No reviews currently available</h6>
+                
+            {% endif %}
+            
         
         </div>
         <br></br>

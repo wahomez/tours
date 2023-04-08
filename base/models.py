@@ -31,14 +31,6 @@ def createProfile(sender, instance, created, **kwargs):
 
 post_save.connect(createProfile, sender=User)
 
-class Review(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="review")
-    comment = models.TextField()
-    uploaded_date = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.user.username
-
 class Destination(models.Model):
     categories = [
         ('Excursions', 'Excursions'),
@@ -52,16 +44,26 @@ class Destination(models.Model):
     name = models.CharField(max_length=250, null=True)
     duration = models.IntegerField(null=True)
     amount = models.IntegerField(null=True)
-    review = models.ForeignKey(Review, on_delete=models.CASCADE, null=True, related_name="destination_review")
-    about = models.TextField()
-    notes = models.TextField()
-    schedule = models.TextField()
-    itinerary = models.TextField()
+    discount = models.IntegerField(blank=True, null=True)
+    # review = models.ForeignKey(Review, on_delete=models.CASCADE, null=True, related_name="destination_review")
+    about = models.TextField(null=True, blank=True)
+    notes = models.TextField(null=True, blank=True)
+    schedule = models.TextField(null=True, blank=True)
+    itinerary = models.TextField(null=True, blank=True)
     
     poster = models.ImageField()
 
     def __str__(self):
         return self.name
+    
+class Review(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="review")
+    tour = models.ForeignKey(Destination, null=True, on_delete=models.SET_NULL, related_name="tour_review")
+    comment = models.TextField()
+    uploaded_date = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.user.username
 
 class Booking(models.Model):
     
