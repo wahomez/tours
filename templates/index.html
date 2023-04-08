@@ -14,12 +14,13 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form method="POST">
+                        <form method="POST" action="">
                             {% csrf_token %}
                             {% for field in form %}
                                 <div class="form-floater">
                                     <label>{{field.label}}:</label>
                                     {{field}}
+                                    <p>{{field.errors}}</p>
                                     <br>
                                 </div>
                             {% endfor %}

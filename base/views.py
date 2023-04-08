@@ -14,11 +14,14 @@ import stripe
 from .keys import *
 from .mpesa import ac_token
 from decimal import Decimal
-from paypal.standard.forms import PayPalPaymentsForm
+# from paypal.standard.forms import PayPalPaymentsForm
 from django.conf import settings
-from django.http import JsonResponse, HttpResponseServerError
+from django.http import JsonResponse, HttpResponseServerError, HttpResponseBadRequest
 from datetime import datetime
-from .utils import create_invoice_pdf
+# from .utils import create_invoice_pdf
+from django.views.decorators.csrf import csrf_exempt
+from requests.auth import HTTPBasicAuth
+import base64
 
 
 
@@ -34,17 +37,24 @@ def Home(request):
         if form.is_valid():
             user = form.save(commit=False)
             user.save()
-
+            
             user = authenticate(request, email=user.email, password=request.POST['password1'])
             if user is not None:
                 login(request, user)
                 messages.success(request, ("You are logged in successfully"))
                 return redirect("/")
+            else:
+                messages.success(request, ("There was an error with your form, Kindly fill again!"))
+                return redirect("/")
+        else:
+            messages.success(request, ("There was an error with your form, Kindly fill again!"))
+            return redirect("/")
+    else:
 
-    context = {
-        "form" : form
-    }
-    return render(request, 'index.html', context)
+        context = {
+            "form" : form
+        }
+        return render(request, 'index.html', context)
 
 def Contact(request):
     if request.method == 'POST':
@@ -78,6 +88,8 @@ def destination_page(request, pk):
     tours = Destination.objects.filter(id=pk)
     destination = Destination.objects.get(id=pk)
     review = Review.objects.filter(destination_review=pk)
+    duration = destination.duration
+    print("Duration:", duration)
     booking = Booking.objects.all()
    
 
@@ -85,8 +97,17 @@ def destination_page(request, pk):
 
     if request.method == "POST":
         slots = request.POST['slots']
+        tour_time = request.POST['tour-time']
+        
         tour = destination
-        booking = Booking.objects.create(user=request.user, tour=tour, slots=slots)
+        if duration == 1:
+            start_date = request.POST['start-date']
+            end_date = None
+        else:
+            start_date = request.POST['start-date']
+            end_date = request.POST['end-date']
+            
+        booking = Booking.objects.create(user=request.user, tour=tour, slots=slots, start_date=start_date, end_date=end_date, tour_time=tour_time)
         booking.save()
         messages.success(request, "You have booked a tour successfully. Proceed to checkout!")
         return redirect("checkout", booking_id=booking.id)
@@ -101,13 +122,25 @@ def Gallery(request):
     return render(request, "gallery.html")
 
 def Safari(request):
-    return render(request, "safaritours.html")
+    tours = Destination.objects.filter(category="Safari Tours")
+    context = {
+        "tours" : tours
+    }
+    return render(request, "safaritours.html", context)
 
 def Farm(request):
-    return render(request, "farmtours.html")
+    tours = Destination.objects.filter(category="Farm Tours")
+    context = {
+        "tours" : tours
+    }
+    return render(request, "farmtours.html", context)
 
 def hikingAdventure(request):
-    return render(request, "hikingadventuretours.html")
+    tours = Destination.objects.filter(category="Hiking and Adventures Tours")
+    context = {
+        "tours" : tours
+    }
+    return render(request, "hikingadventuretours.html", context)
 
 
 def Review_tour(request):
@@ -134,9 +167,14 @@ def Register(request):
         password = request.POST['password']
         form = User.objects.create(email = email, username=username, password=password)
         form.save()
-        messages.success(request, "Registration was successful!")
-        return redirect("/")
-
+        user = authenticate(request, email=email, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, "Registration was successful!")
+            return redirect("/")
+        else:
+            messages.success(request, ("There was an error when login in!"))
+            return redirect("/")
     else:       
         context = {
             "form":form
@@ -154,6 +192,7 @@ def login_user(request):
             return redirect("/")
         else:
             messages.success(request, ("There was an error when login in!"))
+            return redirect("/")
 
     else:
         return render(request, "login.html")
@@ -193,7 +232,7 @@ def checkout(request, booking_id):
         payment_date = payment_date
         invoice = Invoice.objects.create(first_name=first_name, last_name=last_name, email=email, tour=tour, tour_date=tour_date, price=price, slots=slots, total=total, payment_date=payment_date)
         invoice.save()
-        messages.success(request, ("Successfully generated your invoice!"))
+        messages.success(request, ("Successfully completed checkout.Your invoice will be sent to your email shortly."))
         return redirect("/")
 
         # #send the invoice to cutomer via email
@@ -222,81 +261,125 @@ def payment_cancel(request):
   return render(request, "payment_cancel.html")
 
 
-def mpesa_payment(request):
-        pay=Payment.objects.all()
+def mpesa_payment(request, pk):
+    booking = Booking.objects.get(id=pk)
+    #get payment details from form
+    if booking.paid == True:
+        messages.success(request, ("Your tour is already paid for!"))
+        return redirect("checkout", pk)
+    else:
         if request.method == "POST":
-            Number = request.POST['number']
-            Amount = request.POST['amount']
-    #Mpesa API
-        token = ac_token()
+            mobile = request.POST["mobile"]
+            amount = request.POST["amount"]
+            print("KEY:", pk)
+            # order = Order.objects.get(order_id=pk)
+            tour = booking.tour.name
+            print("Tour:", tour)
+            booking_id = booking.id
+            print("ID:", booking_id)
+        #get access token
+        auth_url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
+        response = requests.get(auth_url, auth=HTTPBasicAuth(CONSUMER_KEY, CONSUMER_SECRET))
+        access_token = response.json()["access_token"]
+
+        #get payment details
+        # mobile = 254748373873
+        # amount = 100
+        # description = "Product 1"
+
+        #create payment payload
         headers = {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer %s' %token
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer %s' % access_token
         }
+
         payload = {
             "BusinessShortCode": 174379,
-            "Password": "MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMjMwMTA5MTI1NjU1",
-            "Timestamp": "20230109125655",
+            "Password": "MTc0Mzc5YmZiMjc5ZjlhYTliZGJjZjE1OGU5N2RkNzFhNDY3Y2QyZTBjODkzMDU5YjEwZjc4ZTZiNzJhZGExZWQyYzkxOTIwMjMwMzIwMjM1NTA2",
+            "Timestamp": "20230320235506",
             "TransactionType": "CustomerPayBillOnline",
-            "Amount": Amount,
-            "PartyA": "254" + Number,
+            "Amount": amount,
+            "PartyA": "254" + mobile,
             "PartyB": 174379,
-            "PhoneNumber": "254" + Number,
-            "CallBackURL": 'https://api.darajambili.com/express-payment',
-            "AccountReference": "Cruizesafari",
-            "TransactionDesc": "Payment of X"
+            "PhoneNumber": "254" + mobile,
+            "CallBackURL": "https://cruizesafaris.com/callback/",
+            "AccountReference": "Cruize Beyond",
+            "TransactionDesc": tour
         }
-
+        #stk push api
         response = requests.request("POST", 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest', headers = headers, json = payload)
-        # print(response.text.encode('utf8'))
+        
         code = response.json()
+        print(code)
+
         try:
-            if code['ResponseCode'] == '0':
-                print("Successful!. Complete the pin prompt sent to your device")
-                # payment = Payment.objects.update(Successful=True)
-                # payment.save()
+            if code["ResponseCode"] == '0':
+                print("Complete pin prompt sent to your device to complete payment!")
+                booking = Booking.objects.get(id=booking_id)
+                payment = Payment.objects.create(user=booking.user, booking=booking)
+                Booking.objects.update(paid=True)
+                payment.save()
+                messages.success(request, ("Payment request was sent successfully!"))
+                return redirect("checkout", booking_id)
             else:
-                print("Failed! Kindly try again.")
+                print("Failed transaction. Try again!")
         except:
-            'Message didnt work'
-        # return code()
+            print("Code didn't work")
+        # print("Token:", access_token)
+        return HttpResponse("We are good")
 
-        messages.success(request, ("Your payment request has been sent successful!"))
-        return redirect('/')
+@csrf_exempt
+def daraja_callback(request):
+    print("Working!")
+    # Extract relevant data from the callback
+    transaction_id = request.POST.get('TransID', '')
+    transaction_status = request.POST.get('TransStatus', '')
 
-# paypalrestsdk.configure({
-#   "mode": "sandbox", # Set to "live" for production
-#   "client_id": "AZHgbmEC5kf3RMcOiO94d5QSq7NYgVeb8NhwMbbR2qBgsWUwX2752zKv8FZYgxcpp7AncFVtBabEdXHh",
-#   "client_secret": "EDokXmFS6BnIJRBrGrVbBU5ZbK3Xs4J6K8PtgFDk5zfqqu7Vc0cHB_8Zx7WkJTcK4q5KCCUvO_Tjp60J"
-# })
+    try:
+        if request.method == 'POST':
+            # Retrieve the JSON data from the request body
+            callback_data = json.loads(request.body)
 
-# Get payment details
-# payment_id = "your_payment_id"
+            # Check if the transaction was successful
+            if callback_data.get('Body.stkCallback.ResultCode') == '0':
+                # Handle the successful transaction
+                print("Callback Data:", callback_data)
+                messages.success(request, ("Payment was successfull. Complete Checkout!"))
 
+                # Return a success response
+                response_data = {
+                    'ResultCode': 0,
+                    'ResultDesc': 'Success'
+                }
+                return HttpResponse(json.dumps(response_data), content_type='application/json')
+            else:
+                # Handle the failed transaction
+                # ...
+                messages.success(request, ("Payment was not successfull. Try again!"))
+                print("Payment Cancelled!")
 
+                # Return an error response
+                response_data = {
+                    'ResultCode': 1,
+                    'ResultDesc': 'Error'
+                }
+                return HttpResponse(json.dumps(response_data), content_type='application/json')
 
-paypalrestsdk.configure({
-  "mode": "sandbox", # Set to "live" for production
-  "client_id": CLIENT_ID,
-  "client_secret": CLIENT_SECRET
-})
+        # Return a bad request response if the request method is not POST
+        response_data = {
+            'ResultCode': 1,
+            'ResultDesc': 'Invalid request method'
+        }
+        return HttpResponse(json.dumps(response_data), content_type='application/json', status=400)
+    except:
+        print("Error!")
 
-def payment_execute(request):
-    body = json.loads(request.body)
-    bookingID = body['bookingID']
-    orderID = body['orderID']
-    amount = body['amount']
-    payerID = body['payerID']
-    paymentID = body['paymentID']
-    
-    print('BODY: ', body)
-    print("Transaction Successful")
-    booking = Booking.objects.get(id=bookingID)
-    payment = Payment.objects.create(user=request.user, tour=booking.tour)
-    payment.save()
-    return JsonResponse("Payment Completed!", safe=False)
-    # return redirect(reverse('checkout'), args=[bookingID])
-    
+    # Perform any necessary actions, such as updating your database
+    # ...
+
+    # Return a response to Daraja
+    return HttpResponse(status=200)
+
 
 def charge(request):
     if request.method == 'POST':
@@ -371,19 +454,24 @@ def execute_payment(request):
     booking_id = payment.transactions[0].custom
     print(booking_id)
     if payment.execute({"payer_id": payer_id}):
+        reference_id = payment_id
+        type_payment = "Paypal"
         booking = Booking.objects.get(id=booking_id)
-        payment = Payment.objects.create(user=booking.user, booking=booking)
+        payment = Payment.objects.create(user=booking.user, booking=booking, reference_id=reference_id, type_payment=type_payment)
         Booking.objects.update(paid=True)
         payment.save()
+        messages.success(request, ("Payment was successfull. Completed Checkout!"))
         return redirect("checkout", booking_id)
 
         # Payment successful, do something here
         # return HttpResponse("Payment worked")
     else:
         # Payment unsuccessful, do something here
-        return HttpResponse("Payment failed")
+        messages.success(request, ("Payment not successfull try again"))
+        return redirect("checkout", booking_id)
 
 def cancel_payment(request):
-    return HttpResponse("Payment cancelled")
+    messages.success(request, ("Payment not successfull try again"))
+    return redirect("checkout")
 
 

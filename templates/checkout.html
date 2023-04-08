@@ -13,16 +13,16 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form method="POST" action="{% url "mpesa" %}">
+                        <form method="POST" action="{% url "mpesa" booking %}">
                             {%csrf_token%}
                             <div class="input-group mb-3">
                                 <label class="input-group-text" for="tourDate">Amount</label>
-                                <input class="form-control" type="text" value="{{total}}" aria-label="tourDate" id="tourDate" name="amount" readonly>
+                                <input class="form-control" type="text" value="{{total}}" aria-label="tourDate" name="amount" readonly>
                             </div>
                             <div class="input-group mb-3">
                                 <button class="btn btn-outline-info" type="button" aria-expanded="false">Phone No.</button>
                                 <button class="btn btn-outline-secondary" type="button" data-bs-toggle="dropdown" aria-expanded="false">+254</button>
-                                <input type="number" class="form-control no-arrow" aria-label="" placeholder="712345678" name="number">
+                                <input type="number" class="form-control no-arrow" aria-label="" placeholder="712345678" name="mobile">
                                 <div id="phoneNoHelp" class="form-text">You will receive an M-Pesa pop-up on your phone. Please enter your M-Pesa pin to complete the transaction</div>
                             </div>
                         <div class="modal-footer">
@@ -286,11 +286,11 @@
                             </div>
                                 <div class="input-group col-auto">
                                     <label class="input-group-text" for="tourDate">Tour date(s)</label>
-                                    <input class="form-control" type="text" value="{{check.tour.duration}}" aria-label="tourDate" name="tourDate" readonly>
+                                    <input class="form-control" type="text" value="{{check.start_date}} {% if check.end_date%}- {{check.end_date}} {% endif %}" aria-label="tourDate" name="tourDate" readonly>
                                 </div>
                                 <div class="input-group col-auto">
                                     <label class="input-group-text" for="tourTime">Tour time(s)</label>
-                                    <input class="form-control" type="text" value="tour time here" aria-label="tourTime" name="tourTime" readonly>
+                                    <input class="form-control" type="text" value="{{check.tour_time}}" aria-label="tourTime" name="tourTime" readonly>
                                 </div>
 
                             <hr class="my-4">
@@ -305,12 +305,12 @@
                             <div class="col-auto">
                                 <a href="{% url 'paypal-test' booking %}" class="btn btn-outline-info" role="button" >Paypal</a>
                             </div>
-                            <div class="col-auto">
+                            <!-- <div class="col-auto">
                                 <a class="btn btn-outline-info" role="button" data-bs-toggle="modal" data-bs-target="#stripeModal" >Visa/Mastercard</a>
                             </div>
                             <div class="col-auto">
                                 <a class="btn btn-outline-info" role="button" data-bs-toggle="modal" data-bs-target="#pesapalModal" >Pesapal</a>
-                            </div>
+                            </div> -->
                             <div class="col-auto">
                                 <!--<a class="btn btn-outline-info" role="button" href="#">M-Pesa</a>-->
                                 <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#m-pesaModal">M-Pesa</button>

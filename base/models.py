@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import  AbstractUser
 from django.db.models.signals import post_save
-from django.utils import timezone
+from datetime import datetime
 import uuid
 
 # Create your models here.
@@ -46,6 +46,7 @@ class Destination(models.Model):
         ('Farm Tours', 'Farm Tours'),
         ('Hiking and Adventures Tours', 'Hiking and Adventures Tours')
     ]
+    
     category = models.CharField(max_length=50, choices=categories)
     description = models.CharField(max_length=200, null=True)
     name = models.CharField(max_length=250, null=True)
@@ -56,25 +57,37 @@ class Destination(models.Model):
     notes = models.TextField()
     schedule = models.TextField()
     itinerary = models.TextField()
+    
     poster = models.ImageField()
 
     def __str__(self):
         return self.name
 
 class Booking(models.Model):
+    
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="booking_user")
     tour = models.ForeignKey(Destination, on_delete=models.SET_NULL,null=True, related_name="booking_tour")
     slots = models.IntegerField()
     paid = models.BooleanField(default=False)
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
+    tour_time = models.CharField(max_length=200, blank=True, null=True)
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return str(self.user) + str("-") + str(self.tour)
     
 class Payment(models.Model):
+    payment_choices = [
+        ("M-PESA", "M-PESA"),
+        ("Paypal", "Paypal"),
+        ("Stripe", "Stripe")
+    ]
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     booking = models.ForeignKey(Booking, on_delete=models.SET_NULL, null=True, related_name="payment_booking")
-    date = models.DateTimeField(default=timezone.now)
+    type_payment = models.CharField(max_length=200, choices=payment_choices, null=True, blank=True)
+    reference_id = models.CharField(max_length=200, blank=True, null=True)
+    date = models.DateTimeField(default=datetime.now)
 
     def __str__(self):
         return str(self.booking)
