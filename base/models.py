@@ -89,7 +89,7 @@ class Payment(models.Model):
     booking = models.ForeignKey(Booking, on_delete=models.SET_NULL, null=True, related_name="payment_booking")
     type_payment = models.CharField(max_length=200, choices=payment_choices, null=True, blank=True)
     reference_id = models.CharField(max_length=200, blank=True, null=True)
-    date = models.DateTimeField(default=datetime.now)
+    date = models.DateTimeField(default=datetime.now, null=True)
 
     def __str__(self):
         return str(self.booking)
@@ -104,7 +104,7 @@ class Invoice(models.Model):
     price = models.IntegerField()
     slots = models.IntegerField()
     total = models.IntegerField()
-    payment_date = models.DateTimeField()
+    payment_date = models.DateTimeField(null=True)
 
     def __str__(self):
         return str(self.invoice_id)

@@ -4,6 +4,36 @@
 
 <div class="container">
     <main id="checkoutContent">
+        <!--Update tour modal-->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" id="m-pesaModalContent">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="m-pesaModalLabel">Update Tour Form</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action="{% url "tour-update" booking %}">
+                            {%csrf_token%}
+                            {% for field in form %}
+                                <div class="form-floater">
+                                    <label>{{field.label}}:</label>
+                                    {{field}}
+                                    
+                                    <br>
+                                </div>
+                            {% endfor %}
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-outline-success">Update</button>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
         <!-- M-Pesa modal -->
         <div class="modal fade" id="m-pesaModal" tabindex="-1" aria-labelledby="m-pesaModalLabel" aria-hidden="true" >
             <div class="modal-dialog modal-dialog-centered">
@@ -292,6 +322,11 @@
                                     <label class="input-group-text" for="tourTime">Tour time(s)</label>
                                     <input class="form-control" type="text" value="{{check.tour_time}}" aria-label="tourTime" name="tourTime" readonly>
                                 </div>
+                                <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                    Update
+                                </button>
+                                
+                                {% comment %} <a href="{% url 'destination' %}" type="button" class=""></a> {% endcomment %}
 
                             <hr class="my-4">
                             
@@ -303,7 +338,7 @@
 
                         <div class="row justify-content-center my-3 gy-3">
                             <div class="col-auto">
-                                <a href="{% url 'paypal-test' booking %}" class="btn btn-outline-info" role="button" >Paypal</a>
+                                <a href="{% url 'paypal-test' booking %}" class="btn btn-outline-success" role="button" >Paypal</a>
                             </div>
                             <!-- <div class="col-auto">
                                 <a class="btn btn-outline-info" role="button" data-bs-toggle="modal" data-bs-target="#stripeModal" >Visa/Mastercard</a>
@@ -313,7 +348,7 @@
                             </div> -->
                             <div class="col-auto">
                                 <!--<a class="btn btn-outline-info" role="button" href="#">M-Pesa</a>-->
-                                <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#m-pesaModal">M-Pesa</button>
+                                <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#m-pesaModal">M-Pesa</button>
                             </div>
                         </div>
                         </div>

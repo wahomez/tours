@@ -23,6 +23,7 @@ from django.views.decorators.csrf import csrf_exempt
 from requests.auth import HTTPBasicAuth
 import base64
 from google_currency import convert
+from .forms import TourForm, TourForm_1
 
 
 
@@ -91,11 +92,10 @@ def destination_page(request, pk):
     review = Review.objects.filter(tour=pk)
     duration = destination.duration
     print("Duration:", duration)
-    booking = Booking.objects.all()
+    # booking = Booking.objects.get(tour=pk, user=request.user)
+    # slots = booking.slots
+    # print("Booking:", slots)
    
-
-
-
     if request.method == "POST":
         slots = request.POST['slots']
         tour_time = request.POST['tour-time']
@@ -207,6 +207,24 @@ def logout_user(request):
     messages.success(request, ("You have successfully logged out"))
     return redirect("/")
 
+def tour_update(request, pk):
+    booking = Booking.objects.get(id=pk)
+    duration = booking.tour.duration
+    print("Dur:", duration)
+    if request.method == "POST":
+        form = TourForm(request.POST, instance=booking)
+        print("Sth is happening")
+        if form.is_valid():
+            form.save(commit=False)
+            form.save()
+            messages.success(request, ("You have successfully updated the tour details!"))
+            return redirect("checkout", pk)
+        else:
+            messages.success(request, ("There was an error when updating your tour details. Kindly try again!"))
+            return redirect("checkout", pk)
+    print("Maybe woking")
+    return redirect("checkout", pk)
+
 
 def checkout(request, booking_id):
     booking = Booking.objects.get(id=booking_id)
@@ -225,6 +243,16 @@ def checkout(request, booking_id):
     json_string = convert('usd', 'kes', total)
     convert_total = json.loads(json_string)
     converted_total = convert_total["amount"]
+    payment_date = None
+
+    duration = booking.tour.duration
+    # print("Tour:", tour)
+
+    if duration == 1:
+        form = TourForm_1(instance=booking)
+    else:
+        form = TourForm(instance=booking)
+    
     # total = convert_total["amount"]
     
     booking = booking.id
@@ -264,7 +292,8 @@ def checkout(request, booking_id):
         "checkout" : checkout,
         "total" : total,
         'booking' : booking, 
-        "converted_total" : converted_total
+        "converted_total" : converted_total,
+        "form" : form
         }
     return render(request, "checkout.html", context)
 

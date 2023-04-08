@@ -23,6 +23,7 @@ urlpatterns = [
     path("contact/", views.Contact, name="contact"),
     path("excursion/", views.Excursions, name="excursions"),
     path("destination/<str:pk>/", views.destination_page, name="destination"),
+    path("tour-update/<int:pk>/", views.tour_update, name="tour-update"),
     path("gallery/", views.Gallery, name="gallery"),
     path("mpesa/<int:pk>/", views.mpesa_payment, name="mpesa"),
     path("callback/", views.daraja_callback, name="mpesa-callback"),
