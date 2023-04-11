@@ -1,0 +1,66 @@
+{% extends 'header.html' %}
+{% block content %}
+{% load static %}
+<main class="min-vh-100 w-100 m-auto text-center" id="signupContainer">
+  <form class="needs-validation" id="signupForm" method="post" novalidate>
+    <h1 class="h3 mb-3 fw-normal">Please sign up</h1>
+
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" id="userFullNames" placeholder="Full Names" required>
+      <label for="userFullNames">Full names</label>
+      <div class="valid-feedback">
+        All good!
+      </div>
+      <div class="invalid-feedback">
+        Enter your full names
+      </div>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="text" class="form-control" id="username" placeholder="Username" required>
+      <label for="username">Username</label>
+      <div class="valid-feedback">
+        All good!
+      </div>
+      <div class="invalid-feedback">
+       Enter a username
+      </div>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="email" class="form-control" id="userEmail" placeholder="name@example.com" required>
+      <label for="userEmail">Email address</label>
+      <div id="userEmailHelp" class="form-text">We'll never share your email with anyone else.</div>
+      <div class="valid-feedback">
+        All good!
+      </div>
+      <div class="invalid-feedback">
+        Please enter an email address
+      </div>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="password" class="form-control" id="userPassword1" placeholder="Enter a password" required>
+      <label for="userPassword2">Password</label>
+      <div id="userPasswordHelp1" class="form-text">Include both Uppercase and lowercase characters, a number and a special character e.g.!$</div>
+      <div class="valid-feedback">
+        All good!
+      </div>
+      <div class="invalid-feedback">
+        Enter a password
+      </div>
+    </div>
+    <div class="form-floating mb-3">
+      <input type="password" class="form-control" id="userPassword2" placeholder="Repeat the password" required>
+      <label for="userPassword2">Password</label>
+      <div id="userPasswordHelp2" class="form-text">Repeat the password</div>
+      <div class="valid-feedback">
+        All good!
+      </div>
+      <div class="invalid-feedback">
+        Enter a password
+      </div>
+    </div>
+
+    <button class="w-100 btn btn-lg btn-success" type="submit">Sign up</button>
+  </form>
+</main>
+
+{% endblock content %}

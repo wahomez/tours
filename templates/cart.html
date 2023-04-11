@@ -1,0 +1,76 @@
+{% extends 'header.html' %}
+{% block content %}
+{% load static %}
+<div class="container min-vh-100" id="cartContainer">
+  <div class="row" id="cartHeader">
+    <div class="col-sm-9">
+      <h2>Tours Cart</h2>
+      <p>Here are all your tours</p>
+    </div>
+    <div class="col-sm-3">
+      <h3><span class="badge bg-success rounded-pill">3 tours</span></h3>
+      <!--<p>Here are all your tours</p>-->
+    </div>
+  </div>
+  <hr>
+  <!--<div class="row " id="item1Container">
+    <div class="col-sm-5 ">
+      <h6>Tour details</h6>
+    </div>
+    <div class="col-sm-2">
+      <h6>No. of Participants</h6>
+    </div>
+    <div class="col-sm-2">
+      <h6>&nbsp;Price (per person)</h6>
+    </div>
+    <div class="col-sm-2 text-center">
+      <h6>Delete Tour</h6>
+    </div>
+  </div>
+  <hr>-->
+  <div class="row mb-2" id="item2Container">
+    <div class="col-sm-5">
+      <h5>Item name</h5>
+      <br>
+      <p>Item description</p>
+    </div>
+    <div class="col-sm-2 p-2">
+      <p>Participants</p>
+      <input type="number" class="form-control" id="participants2" placeholder="participants" name="slots" required>
+    </div>
+    <div class="col-sm-2 p-2 text-center">
+      <p>Cost (per person)</p>
+      $700
+    </div>
+    <div class="col-sm-2 text-center">
+     <a class="link-danger" href="#"><i class="fa-solid fa-trash"></i></a>
+    </div>
+  </div>
+  <hr>
+  <div class="row " id="item3Container">
+    <div class="col-sm-5">
+      <h5>Item name</h5>
+      <br>
+      <p>Item description</p>
+    </div>
+    <div class="col-sm-2">
+      <p>Participants</p>
+      <input type="number" class="form-control" id="partcipants3" placeholder="1,5,17..." name="slots" required>
+    </div>
+    <div class="col-sm-2 text-center">
+      <p>Cost (per person)</p>
+      $700
+    </div>
+    <div class="col-sm-2 text-center">
+      <a class="link-danger" href="#"><i class="fa-solid fa-trash"></i></a>
+    </div>
+  </div>
+  <hr>
+  <div class="row pb-3 justify-content-center">
+    <div class="col-sm-8">
+      <a class="btn btn-lg btn-success d-block" role="button" href="#">Continue to checkout</a>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}

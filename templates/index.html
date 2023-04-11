@@ -50,7 +50,7 @@
                             <label for="userEmail" class="form-label">Email Address</label>
                             <div class="">
                                 <!--<span class="input-group-text" id="usernameHelp">@</span>-->
-                                <input type="email" class="form-control" name="email" aria-describedby="userEmailHelp" required>
+                                <input type="email" class="form-control" name="email" aria-describedby="userEmailHelp" id="userEmail" required>
                                 <div class="valid-feedback">
                                     All good!
                                 </div>
@@ -61,7 +61,7 @@
                             <br>
                             <div class="">
                                 <label for="userPassword" class="form-label">Password</label>
-                                <input type="password" class="form-control" name="password" required>
+                                <input type="password" class="form-control" name="password" id="userPassword" required>
                                 <div class="valid-feedback">
                                     All good!
                                 </div>
@@ -96,7 +96,8 @@
                 {% else %}
                     <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#loginModal">Sign In</button>
                 {% endif %}
-                
+                <a class="btn btn-outline-light" role="button" href={% url "signin"%}> Sign In1 </a>
+
             </div>
         </div>
         <div class="row text-center" id="homeTagLineQuote">
