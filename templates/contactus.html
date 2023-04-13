@@ -9,7 +9,7 @@
     <div class="" id="contactOpacityContainer">
         <div class="row justify-content-center text-center" id="formContainer">
             <h4><b>Leave us a message</b></h4>
-            <form class="col-sm-4 gy-4" method="POST" name="contactUsForm">
+            <form class="col-sm-4 gy-4 needs-validation" method="POST" name="contactUsForm" novalidate>
                 {% csrf_token %}
                 <div class="mb-3">
                     <!--<label for="userEmail" class="form-label"><b>Email address</b></label>-->
@@ -17,6 +17,12 @@
                         <span class="input-group-text" id="emailHelp">Email address</span>
                         <input type="email" class="form-control col-sm-4" id="userEmail" name="userEmail" aria-describedby="emailHelp" placeholder="email address" required>
                         <!--<div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>-->
+                        <div class="valid-feedback">
+                            All good!
+                        </div>
+                        <div class="invalid-feedback">
+                            Please enter an email address
+                        </div>
                     </div>
                 </div>
                 <div class="mb-3">
@@ -24,6 +30,12 @@
                         <span class="input-group-text">Full names</span>
                         <input type="text" name="userName" aria-label="User name" class="form-control" required>
                         <!--<input type="text" name="userLastName" aria-label="Last name" class="form-control" required>-->
+                        <div class="valid-feedback">
+                            All good!
+                        </div>
+                        <div class="invalid-feedback">
+                            Enter your full names!
+                        </div>
                     </div>
                 </div>
                 <!--Comments/Query-->
@@ -31,6 +43,12 @@
                     <div class="input-group">
                         <span class="input-group-text">Comments/Query</span>
                         <textarea class="form-control" name="userMessage" aria-label="userMessage" placeholder="We are waiting..." required></textarea>
+                        <div class="valid-feedback">
+                            All good!
+                        </div>
+                        <div class="invalid-feedback">
+                            Field cannot be empty
+                        </div>
                     </div>
                 </div>
 
