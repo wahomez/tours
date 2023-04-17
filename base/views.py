@@ -73,9 +73,8 @@ def Contact(request):
         )
         messages.success(request, ("Contact form sent successfully"))
         return redirect("/")
-        
-
-    return render(request, "contactus.html")
+    else:
+        return render(request, "contactus.html")
 
 def Excursions(request):
     tours = Destination.objects.filter(category="Excursions")
@@ -85,7 +84,7 @@ def Excursions(request):
     return render(request, "excursions.html", context)
 
 
-
+@login_required(login_url="login")
 def destination_page(request, pk):
     tours = Destination.objects.filter(id=pk)
     destination = Destination.objects.get(id=pk)
@@ -112,13 +111,13 @@ def destination_page(request, pk):
         booking.save()
         messages.success(request, "You have booked a tour successfully. Proceed to checkout!")
         return redirect("checkout", booking_id=booking.id)
-
-    context = {
+    
+    else:
+        context = {
         "tours" : tours,
         "review" : review,
-        
-    }
-    return render(request, "destination.html", context)
+        }
+        return render(request, "destination.html", context)
 
 def Gallery(request):
     return render(request, "gallery.html")
@@ -144,7 +143,7 @@ def hikingAdventure(request):
     }
     return render(request, "hikingadventuretours.html", context)
 
-
+@login_required(login_url="login")
 def Review_tour(request, pk):
     tour = Destination.objects.get(id=pk)
     print("Toour: ", tour)
@@ -202,6 +201,7 @@ def login_user(request):
     else:
         return render(request, "login.html")
 
+@login_required(login_url="login")
 def logout_user(request):
     logout(request)
     messages.success(request, ("You have successfully logged out"))
@@ -219,10 +219,10 @@ def signup(request):
 def tour_update(request, pk):
     booking = Booking.objects.get(id=pk)
     duration = booking.tour.duration
-    print("Dur:", duration)
+    # print("Dur:", duration)
     if request.method == "POST":
         form = TourForm(request.POST, instance=booking)
-        print("Sth is happening")
+        # print("Sth is happening")
         if form.is_valid():
             form.save(commit=False)
             form.save()
@@ -231,7 +231,7 @@ def tour_update(request, pk):
         else:
             messages.success(request, ("There was an error when updating your tour details. Kindly try again!"))
             return redirect("checkout", pk)
-    print("Maybe woking")
+    # print("Maybe woking")
     return redirect("checkout", pk)
 
 
@@ -240,7 +240,7 @@ def checkout(request, booking_id):
     try:
         payment = Payment.objects.get(booking=booking)
         payment_date = payment.date
-        print(payment_date)
+        # print(payment_date)
     except:
         print("Error in date")
     checkout = Booking.objects.filter(id=booking_id)
@@ -297,14 +297,16 @@ def checkout(request, booking_id):
         # email.attach(filename='invoice.pdf', content=pdf.getvalue(), mimetype='application/pdf')
         # return HttpResponse("Invoice successfully sent to email")
 
-    context = {
+    else:
+        context = {
         "checkout" : checkout,
         "total" : total,
         'booking' : booking, 
         "converted_total" : converted_total,
         "form" : form
         }
-    return render(request, "checkout.html", context)
+
+        return render(request, "checkout.html", context)
 
 def payment_success(request):
   return render(request, "payment_success.html")
@@ -323,16 +325,18 @@ def mpesa_payment(request, pk):
         if request.method == "POST":
             mobile = request.POST["mobile"]
             amount = request.POST["amount"]
+            print()
             print("KEY:", pk)
             # order = Order.objects.get(order_id=pk)
             tour = booking.tour.name
-            print("Tour:", tour)
+            # print("Tour:", tour)
             booking_id = booking.id
-            print("ID:", booking_id)
+            # print("ID:", booking_id)
         #get access token
         auth_url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
-        response = requests.get(auth_url, auth=HTTPBasicAuth(CONSUMER_KEY, CONSUMER_SECRET))
-        access_token = response.json()["access_token"]
+        auth_response = requests.get(auth_url, auth=HTTPBasicAuth(CONSUMER_KEY, CONSUMER_SECRET))
+        access_token = auth_response.json()["access_token"]
+        print("Token:", access_token)
 
         #get payment details
         # mobile = 254748373873
@@ -362,7 +366,7 @@ def mpesa_payment(request, pk):
         response = requests.request("POST", 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest', headers = headers, json = payload)
         
         code = response.json()
-        print(code)
+        # print(code)
 
         try:
             if code["ResponseCode"] == '0':
@@ -504,7 +508,7 @@ def execute_payment(request):
     
     payment = paypalrestsdk.Payment.find(payment_id)
     booking_id = payment.transactions[0].custom
-    print(booking_id)
+    # print(booking_id)
     if payment.execute({"payer_id": payer_id}):
         reference_id = payment_id
         type_payment = "Paypal"
@@ -512,18 +516,16 @@ def execute_payment(request):
         payment = Payment.objects.create(user=booking.user, booking=booking, reference_id=reference_id, type_payment=type_payment)
         Booking.objects.update(paid=True)
         payment.save()
-        messages.success(request, ("Payment was successfull. Completed Checkout!"))
+        messages.success(request, ("Payment was successfull. You can complete Checkout!"))
         return redirect("checkout", booking_id)
 
         # Payment successful, do something here
         # return HttpResponse("Payment worked")
     else:
         # Payment unsuccessful, do something here
-        messages.success(request, ("Payment not successfull try again"))
+        messages.success(request, ("Payment not successfull, please try again"))
         return redirect("checkout", booking_id)
 
 def cancel_payment(request):
-    messages.success(request, ("Payment not successfull try again"))
+    messages.success(request, ("Payment was cancelled"))
     return redirect("checkout")
-
-

@@ -33,7 +33,7 @@ STRIPE_PUBLIC_KEY = 'pk_test_51MiDDEIgqJPzZ3YM0jvpwlehgbckif6lTeEjCYdAH9Ir2jwaF2
 STRIPE_SECRET_KEY = 'sk_test_51MiDDEIgqJPzZ3YMgqCvjzfd7aEy45k7U23xXqJ7QsMRQUFGoE3Wu2viVvK1XKuQLK808bfpy0nLbEn7usgXIqXK00OnSKnG5K'
 
 
-ALLOWED_HOSTS = ['cruizesafaris.com', 'localhost']
+ALLOWED_HOSTS = [ '127.0.0.1', 'cruizesafaris.com', 'localhost']
 
 CORS_ALLOWED_ORIGINS = [
     'https://cruizesafaris.com'
