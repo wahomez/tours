@@ -39,6 +39,13 @@
     
     {% block content%}
     {% endblock %}
+    
+    <script>
+        $(document).ready(function() {
+            $('#loginModal').modal('show');
+        });
+        console.log("hi");
+    </script>
 </body>
 <footer>
     {% include "includes/footer.html"%}
