@@ -207,6 +207,15 @@ def logout_user(request):
     messages.success(request, ("You have successfully logged out"))
     return redirect("/")
 
+def cart(request):
+    return render(request, "cart.html")
+
+def signin(request):
+    return render(request, "signin.html")
+
+def signup(request):
+    return render(request, "signup.html")
+
 def tour_update(request, pk):
     booking = Booking.objects.get(id=pk)
     duration = booking.tour.duration
