@@ -8,12 +8,14 @@
     margin: 20px 20px;
     background-color: rgba(8, 54, 0, 0.85);
 }
+#messagesContainer{
+    padding: 50px 10px 10px 10px;
+}
 #registerModalContent{
     background-color: #081f00;
     color: #fff;
     opacity: 1;
 }
-
 #loginModalContent{
     background-color: #081f00;
     color: #fff;
@@ -341,7 +343,11 @@
 }
 #destinationBooking .label{
 }
-#cartContainer{
+#cartContainer a p{
+    display: none;
+}
+#cartContainer a:hover p{
+     display: block;
 }
 #cartHeader{
     padding-top: 150px;

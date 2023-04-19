@@ -2,12 +2,14 @@
 {% block content %}
 {% load static %}
 <div class="container min-vh-100" id="cartContainer">
-  <div class="row" id="cartHeader">
-    <div class="col-sm-9">
+  <div class="row justify-content-center text-center" id="cartHeader">
+    <div class="col-sm-6">
       <h2>Tours Cart</h2>
       <p>Here are all your tours</p>
     </div>
-    <div class="col-sm-3">
+  </div>
+  <div class="row justify-content-center text-center">
+    <div class="col-sm-2">
       <h3><span class="badge bg-success rounded-pill">3 tours</span></h3>
       <!--<p>Here are all your tours</p>-->
     </div>
@@ -28,41 +30,102 @@
     </div>
   </div>
   <hr>-->
-  <div class="row mb-2" id="item2Container">
-    <div class="col-sm-5">
+  <div class="row text-center" id="item2Container">
+    <div class="col-sm-4">
       <h5>Item name</h5>
       <br>
       <p>Item description</p>
     </div>
-    <div class="col-sm-2 p-2">
+    <div class="col-sm-2 text-center">
       <p>Participants</p>
-      <input type="number" class="form-control" id="participants2" placeholder="participants" name="slots" required>
+      <p>1,5,17..</p>
+      <!--<input type="number" class="form-control" id="partcipants2" placeholder="1,5,17..." name="slots" required>-->
     </div>
-    <div class="col-sm-2 p-2 text-center">
-      <p>Cost (per person)</p>
+    <div class="col-sm-2 text-center">
+      <p>Per person</p>
       $700
     </div>
     <div class="col-sm-2 text-center">
-     <a class="link-danger" href="#"><i class="fa-solid fa-trash"></i></a>
+      <p>Total Cost</p>
+      $2000
+    </div>
+    <div class="col-sm-1 text-center">
+      <a class="link-success" href="#"><i class="fa-solid fa-pen"></i><p>edit</p></a>
+    </div>
+    <div class="col-sm-1 text-center">
+      <a class="link-danger" href="#"><i class="fa-solid fa-trash"></i><p>delete</p></a>
     </div>
   </div>
   <hr>
-  <div class="row " id="item3Container">
-    <div class="col-sm-5">
+  <div class="row text-center" id="item3Container">
+    <div class="col-sm-4 text-center">
+      <h5>Item name</h5>
+      <br>
+      <p>Item description</p>
+    </div>
+    <div class="col-sm-2 text-center">
+      <p>Participants</p>
+      <p>1,5,17..</p>
+      <!--<input type="number" class="form-control" id="partcipants3" placeholder="1,5,17..." name="slots" required>-->
+    </div>
+    <div class="col-sm-2 text-center">
+      <p>Per person</p>
+      $700
+    </div>
+    <div class="col-sm-2 text-center">
+      <p>Total Cost</p>
+      $2000
+    </div>
+    <div class="col-sm-1 text-center">
+      <a class="link-success" href="#"><i class="fa-solid fa-pen"></i><p>edit</p></a>
+    </div>
+    <div class="col-sm-1 text-center">
+      <a class="link-danger" href="#"><i class="fa-solid fa-trash"></i><p>delete</p></a>
+    </div>
+  </div>
+  <hr>
+  <div class="row text-center" id="item4Container">
+    <div class="col-sm-4">
       <h5>Item name</h5>
       <br>
       <p>Item description</p>
     </div>
     <div class="col-sm-2">
       <p>Participants</p>
-      <input type="number" class="form-control" id="partcipants3" placeholder="1,5,17..." name="slots" required>
+      <p>1,5,17..</p>
+      <!--<input type="text" class="form-control" id="partcipants4" placeholder="1,5,17..." name="slots" required>-->
     </div>
-    <div class="col-sm-2 text-center">
-      <p>Cost (per person)</p>
+    <div class="col-sm-2 ">
+      <p>Per person</p>
       $700
     </div>
-    <div class="col-sm-2 text-center">
-      <a class="link-danger" href="#"><i class="fa-solid fa-trash"></i></a>
+    <div class="col-sm-2 ">
+      <p>Total Cost</p>
+      $2000
+    </div>
+    <div class="col-sm-1 ">
+      <a class="link-success" href="#"><i class="fa-solid fa-pen"></i><p>edit</p></a>
+    </div>
+    <div class="col-sm-1 ">
+      <a class="link-danger" href="#"><i class="fa-solid fa-trash"></i><p>delete</p></a>
+    </div>
+  </div>
+  <hr>
+  <div class="row text-center" id="item5Container">
+    <div class="col-sm-8">
+      <!--<h5>Summary</h5>
+      <br>
+      <p>Summary description</p>-->
+    </div>
+    <div class="col-sm-2 ">
+      <p>Total Cost</p>
+      $8000
+    </div>
+    <!--<div class="col-sm-1 text-center">
+      <a class="link-success" href="#" title="edit details"><i class="fa-solid fa-pen"></i></a>
+    </div>-->
+    <div class="col-sm-2 ">
+      <a class="link-danger" href="#"><i class="fa-solid fa-trash"></i><p>clear cart</p></a>
     </div>
   </div>
   <hr>
