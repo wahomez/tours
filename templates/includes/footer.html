@@ -29,12 +29,36 @@
 <script src="{% static "js/main.js" %}"></script>
 <script src="{% static "js/checkout.js" %}"></script>
 <script src="{% static "js/client.js" %}"></script>
+
+<!--alert function-->
 <script>
     function showMessage(){
         alert("Are we good?!");
         /*alert({% include 'includes/messages.html' %});*/
     }
 </script>
+<!--password visibility function-->
+<script>
+    const showpassword = document
+        .querySelector('#showPassword');
+
+    const password = document.querySelector('#userPassword');
+
+    showpassword.addEventListener('click', () => {
+        // Toggle the type attribute using
+        // getAttribute() method
+        const type = password
+            .getAttribute('type') === 'password' ?
+            'text' : 'password';
+
+        password.setAttribute('type', type);
+
+        // Toggle the eye and bi-eye icon
+        this.classList.toggle('bi-eye-slash');
+    });
+
+</script>
+
 
 {% comment %} <script>
     $(document).ready(function() {
