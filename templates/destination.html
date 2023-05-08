@@ -2,7 +2,7 @@
 {% block content %}
 {% load static %}
 
-<div data-bs-theme="dark" id="destinationContainer">
+<div data-bs-theme="dark" id="destinationContainer" data-bs-spy="scroll" data-bs-target="#review">
     <!--<div class="row" id="destinationHeaderImage">
         <div class="col">
             <img src="../images/1.jpg" class="img-fluid">
@@ -146,25 +146,25 @@
         </form>
     </div>
     <br>
-            <div class="row justify-content-center">
-                <div class="col-sm-6">
-                    <form class="needs-validation" method="POST" action= "{%url "review" tour.id %}" novalidate>
-                        {% csrf_token %}
-                        <div class="form-floating" data-bs-theme="dark">
-                            <textarea class="form-control" placeholder="Leave a review here" name="comment" style="height: 100px" id="destinationReview" required></textarea>
-                            <label for="destinationReview">Review</label>
-                            <div class="valid-feedback">
-                                All good!
-                            </div>
-                            <div class="invalid-feedback">
-                                Review cannot be blank
-                            </div>
-                            <br>
-                            <button type="submit" class="btn btn-outline-primary">Submit</button>
+        <div class="row justify-content-center">
+            <div class="col-sm-6">
+                <form class="needs-validation" method="POST" action= "{%url "review" tour.id %}" novalidate>
+                    {% csrf_token %}
+                    <div class="form-floating" data-bs-theme="dark">
+                        <textarea class="form-control" placeholder="Leave a review here" name="comment" style="height: 100px" id="destinationReview" required></textarea>
+                        <label for="destinationReview">Review</label>
+                        <div class="valid-feedback">
+                            All good!
                         </div>
-                    </form>
-                </div>
+                        <div class="invalid-feedback">
+                            Review cannot be blank
+                        </div>
+                        <br>
+                        <button type="submit" class="btn btn-outline-primary">Submit</button>
+                    </div>
+                </form>
             </div>
+        </div>
         </br>
        <div class="container">
             <h4><center><strong>REVIEWS<strong></center><h4>

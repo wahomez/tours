@@ -108,6 +108,24 @@
             <div class="col-sm-2 col-md-3 mx-3" id="homeQuote">
                 <p><br>It is only in adventure that some people succeed in knowing themselves — in finding themselves.<br> ~ André Gide ~</p>
             </div>
+            <div class="col-sm-5 mx-3 mt-5">
+                <div class="input-group">
+                    <select class="form-select" aria-label="Example select with button addon">
+                        <option>Tour type</option>
+                        <option value="1">Excursions</option>
+                        <option value="2">Safari Tours</option>
+                        <option value="3">Farm Tours</option>
+                    </select>
+                    <select class="form-select" aria-label="Example select with button addon">
+                        <option>Destination</option>
+                        <option value="1">Nairobi National Park</option>
+                        <option value="2">Karen Blixen Museum</option>
+                        <option value="3">Bomas of Kenya</option>
+                    </select>
+                    <button class="btn btn-outline-light" type="submit">Book Now</button>
+                </div>
+            </div>
+
         </div>
     </div>
     <!--inspiration quote container-->
@@ -211,6 +229,38 @@
             </div>-->
         </div>
     </div>
+    <!--featured reviews container-->
+     <div class="container-fluid p-3" id="featuredReviewsContainer">
+         <div class="row text-center" id="featuredReviewsHeading">
+             <h5>Trip Advisor Reviews</h5>
+         </div>
+         <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="true">
+             <div class="carousel-indicators">
+                 <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                 <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                 <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2" aria-label="Slide 3"></button>
+             </div>
+             <div class="carousel-inner">
+                 <div class="carousel-item active p-5">
+                     <p class="text-center">Center aligned text on all viewport sizes.</p>
+                 </div>
+                 <div class="carousel-item p-5">
+                     <p class="text-center">Center aligned text on all viewport sizes.</p>
+                 </div>
+                 <div class="carousel-item p-5">
+                     <p class="text-center">Center aligned text on all viewport sizes.</p>
+                 </div>
+             </div>
+             <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                 <span class="visually-hidden">Previous</span>
+             </button>
+             <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                 <span class="visually-hidden">Next</span>
+             </button>
+         </div>
+     </div>
     <!--about us-->
     <div class="parallax" id="aboutContainer">
         <div class="container-fluid" id="aboutOverlay">
