@@ -73,8 +73,6 @@
         &nbsp;&nbsp;
         <!--<a class="btn btn-outline-light" role="button" href={% url "signin"%}>Sign In</a>
         &nbsp;&nbsp;-->
-        <a class="btn btn-outline-light" role="button" href={% url "signup"%}>Sign Up1</a>
-        &nbsp;&nbsp;
         {% if user.is_authenticated %}
 
 
@@ -84,8 +82,10 @@
         &nbsp;&nbsp;
         <a role="button" class="btn btn-outline-light" href={% url "logout"%}>Logout</a>
         {% else %}
+        <a class="btn btn-outline-light" role="button" href={% url "signin"%}>Sign In</a>
+        &nbsp;&nbsp;
         <!--<a class="nav-link" href="#registerModal">Sign Up</a>-->
-        <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#registerModal">Sign Up</button>
+        {% comment %} <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#registerModal">Sign Up</button> {% endcomment %}
         {% endif %}
 
         <!--{% include 'includes/messages.html' %}-->

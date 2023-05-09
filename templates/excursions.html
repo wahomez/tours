@@ -7,6 +7,7 @@
             <h2>Excursions</h2>
         </div>
     </div>
+    
     <div class="row justify-content-center text-center">
         {% for tour  in tours %}
             <div class="col-sm-3 m-2">
@@ -19,7 +20,41 @@
                         </p>
                         <a href="{% url 'destination' tour.id %}" class="btn btn-light">View tour</a>
                         <button class="btn btn-outline-success"><s>$70</s> $55</button>
-                        <a href="#" class="btn btn-outline-light d-grid mt-3" id="review">Leave a review</a>
+                        <a type="button" class="btn btn-outline-light d-grid mt-3" id="review" data-bs-toggle="modal" data-bs-target="#exampleModal">Leave a review</a>
+                            <!-- Modal -->
+                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Write your review below</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                                <form class="needs-validation" method="POST" action= "{% url 'review' tour.id %}" novalidate> 
+                                                    {% csrf_token %}
+                                                    <div class="form-floating" data-bs-theme="dark">
+                                                        <textarea class="form-control" placeholder="Leave a review here" name="comment" style="height: 100px" id="destinationReview" required></textarea>
+                                                        <label for="destinationReview">Review</label>
+                                                        <div class="valid-feedback">
+                                                            All good!
+                                                        </div>
+                                                        <div class="invalid-feedback">
+                                                            Review cannot be blank
+                                                        </div>
+                                                        
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                        <button type="submit" class="btn btn-outline-primary">Submit</button>
+                                                    </div>
+                                                </form>
+                                        </div>
+                                        
+                                    </div>
+                                    </div>
+                                </div>
+
+                        
                     </div>
                 </div>
             </div>
