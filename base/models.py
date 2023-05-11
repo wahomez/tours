@@ -75,6 +75,11 @@ class Booking(models.Model):
     end_date = models.DateField(blank=True, null=True)
     tour_time = models.CharField(max_length=200, blank=True, null=True)
     date = models.DateTimeField(auto_now_add=True)
+    booking_total = models.IntegerField(blank=True, null=True)  # Add this field
+
+    def save(self, *args, **kwargs):
+        self.booking_total = self.slots * self.tour.amount  # Calculate the booking total
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return str(self.user) + str("-") + str(self.tour)
@@ -108,6 +113,15 @@ class Invoice(models.Model):
 
     def __str__(self):
         return str(self.invoice_id)
+    
+class Cart(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_cart")
+    booking = models.ManyToManyField(Booking, related_name="booking")
+    created_date = models.DateTimeField(default=datetime.now, null=True)
+    cleared = models.BooleanField(default=False)
+
+    def __str__(self):
+        return str(self.id)
 
 
 

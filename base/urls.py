@@ -24,6 +24,7 @@ urlpatterns = [
     path("excursion/", views.Excursions, name="excursions"),
     path("destination/<str:pk>/", views.destination_page, name="destination"),
     path("tour-update/<int:pk>/", views.tour_update, name="tour-update"),
+    path("cart-update/<int:pk>/", views.cart_update, name="cart-update"),
     path("gallery/", views.Gallery, name="gallery"),
     path("mpesa/<int:pk>/", views.mpesa_payment, name="mpesa"),
     path("callback/", views.daraja_callback, name="mpesa-callback"),
@@ -48,6 +49,8 @@ urlpatterns = [
     path('paypal-test/<int:pk>', views.create_payment, name='paypal-test'),
     path('paypal/execute_payment/', views.execute_payment, name='paypal-test/execute'),
     path('paypal/cancel_payment/', views.cancel_payment, name='paypal-test/cancel'),
+    # path("update-cart/", views.update_cart, name="update_cart"),
+    path("delete-tour/<int:pk>/", views.delete_tour, name="delete_tour"),
     
     # path('get_access_token/', views.get_access_token, name='get_access_token'),
     # path('get_payment_details/<str:payment_id>/', views.get_payment_details, name='get_payment_details'),

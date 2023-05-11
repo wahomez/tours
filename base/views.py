@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse, redirect
+from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -11,13 +11,14 @@ import paypalrestsdk
 import requests
 import json
 import stripe
+from django.db.models import F, Sum
 from .keys import *
 from .mpesa import ac_token
 from decimal import Decimal
 # from paypal.standard.forms import PayPalPaymentsForm
 from django.conf import settings
 from django.http import JsonResponse, HttpResponseServerError, HttpResponseBadRequest, HttpResponseRedirect
-from datetime import datetime
+from datetime import datetime, date
 # from .utils import create_invoice_pdf
 from django.views.decorators.csrf import csrf_exempt
 from requests.auth import HTTPBasicAuth
@@ -127,6 +128,9 @@ def destination_page(request, pk):
             
         booking = Booking.objects.create(user=request.user, tour=tour, slots=slots, start_date=start_date, end_date=end_date, tour_time=tour_time)
         booking.save()
+        cart, created = Cart.objects.get_or_create(user=request.user, cleared=False)
+        cart.booking.add(booking)
+        
         messages.success(request, "You have booked a tour successfully. View in cart!")
         return redirect("cart")
     
@@ -225,8 +229,104 @@ def logout_user(request):
     messages.success(request, ("You have successfully logged out"))
     return redirect("signin")
 
+@login_required(login_url="signin")
 def cart(request):
-    return render(request, "cart.html")
+    carts = Cart.objects.get(user=request.user, cleared=False)
+    cart_id = carts.id
+    cart = Booking.objects.filter(booking=cart_id)
+    
+    tours = carts.booking
+
+    # duration = tours.duration
+   
+    tour_count = tours.count()
+
+    # bookings = carts.booking.all()
+    # print("Booking: ", bookings)
+    
+    total = 0
+    
+    for booking in cart:
+        tour_amount = booking.tour.amount
+        # print("Amount:", tour_amount)
+        slots = booking.slots
+        # print("Slots:", slots)
+        booking_total = tour_amount * slots
+        # print("Total:", booking_total)
+        total += booking_total
+
+    # form = TourForm(instance=booking)
+    # if duration == 1:
+    #     form = TourForm_1(instance=booking)
+    # else:
+    #     form = TourForm(instance=booking)
+   
+    context = {
+        "carts" : cart,
+        "counts" : tour_count,
+        "total" : total,
+        "id" : cart_id
+        # "form" : form
+    }
+    return render(request, "cart.html", context)
+
+def cart_update(request, pk):
+    if request.method == "POST":
+        booking = Booking.objects.get(id=pk)
+        slots = request.POST["slots"]
+        slots = int(slots)
+        start_date = request.POST["start_date"]
+
+        # Check if start_date is after the current date
+        current_date = date.today()
+        if start_date < str(current_date):
+            messages.error(request, "Start date should be after the current date.")
+            return redirect(request.META.get('HTTP_REFERER', '/'))
+        
+        try:
+            if request.POST["end_date"]:
+                end_date = request.POST["end_date"]
+
+                #Check if end_date is after start_date
+                try:
+                    start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+                    end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+
+                    if end_date <= start_date:
+                        # print("Error in dates")
+                        messages.success(request, "Error in dates! To date must be after from date")
+                        return redirect(request.META.get('HTTP_REFERER', '/'))
+                        # raise ValidationError('To date must be after from date')
+                except (ValueError, TypeError, ValidationError):
+                    print("Doesn't work")
+                    return redirect(request.META.get('HTTP_REFERER', '/'))
+            else:
+                end_date = None
+        except:
+            end_date = None
+            print("Error")
+        tour_time = request.POST["tour_time"]
+
+        
+        
+        booking.slots = slots
+        booking.start_date = start_date
+        booking.end_date = end_date
+        booking.tour_time = tour_time
+        booking.save()
+        print("worked")
+        messages.success(request, "Tour was successfully updated!")
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+    else:
+        print("error")
+        messages.success(request, "Error in form!")
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+
+def delete_tour(request, pk):
+    cart = Booking.objects.get(id=pk)
+    cart.delete()
+    messages.success(request, "Tour was successfully deleted from the cart.")
+    return redirect(request.META.get('HTTP_REFERER', '/'))
 
 def signin(request):
     if request.method == "POST":
@@ -279,10 +379,10 @@ def tour_update(request, pk):
             form.save(commit=False)
             form.save()
             messages.success(request, ("You have successfully updated the tour details!"))
-            return redirect("checkout", pk)
+            return redirect(request.META.get('HTTP_REFERER', '/'))
         else:
             messages.success(request, ("There was an error when updating your tour details. Kindly try again!"))
-            return redirect("checkout", pk)
+            return redirect(request.META.get('HTTP_REFERER', '/'))
     # print("Maybe woking")
     return redirect("checkout", pk)
 
