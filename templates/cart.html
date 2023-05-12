@@ -1,6 +1,8 @@
 {% extends 'header.html' %}
 {% block content %}
 {% load static %}
+{% comment %} {% load custom_filters %} {% endcomment %}
+
 <div class="container min-vh-100" id="cartContainer">
   <div class="row justify-content-center text-center" id="cartHeader">
     <div class="col-sm-6">
@@ -10,7 +12,7 @@
   </div>
   <div class="row justify-content-center text-center">
     <div class="col-sm-2">
-      <h3><span class="badge bg-success rounded-pill">3 tours</span></h3>
+      <h3><span class="badge bg-success rounded-pill">{{counts}} tours</span></h3>
       <!--<p>Here are all your tours</p>-->
     </div>
   </div>
@@ -30,87 +32,85 @@
     </div>
   </div>
   <hr>-->
-  <div class="row text-center" id="item2Container">
-    <div class="col-sm-4">
-      <h5>Item name</h5>
-      <br>
-      <p>Item description</p>
+  {% for cart in carts %}
+    <div class="row text-center" id="item2Container">
+      <div class="col-sm-4">
+        <h5>{{cart.tour.name}}</h5>
+        <br>
+        <p>{{cart.tour.description}}</p>
+      </div>
+      <div class="col-sm-2 text-center">
+        <p>Participants</p>
+        <p>{{cart.slots}}</p>
+        <!--<input type="number" class="form-control" id="partcipants2" placeholder="1,5,17..." name="slots" required>-->
+      </div>
+      <div class="col-sm-2 text-center">
+        <p>Per person</p>
+        ${{cart.tour.amount}}
+      </div>
+      <div class="col-sm-2 text-center">
+        <p>Total Cost</p>
+        ${{cart.booking_total}}
+      </div>
+      <div class="col-sm-1 text-center">
+        <a class="link-success" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal{{cart.id}}" ><i class="fa-solid fa-pen"></i><p>edit</p></a>
+      </div>
+      <div class="col-sm-1 text-center">
+        <a class="link-danger" href="{% url 'delete_tour' cart.id %} "><i class="fa-solid fa-trash"></i><p>delete</p></a>
+      </div>
+      <!--Update tour modal-->
+      <div class="modal fade" id="exampleModal{{cart.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" id="m-pesaModalContent">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="m-pesaModalLabel">Update Tour Form</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="{% url "cart-update" cart.id %}">
+                        {%csrf_token%}
+                        <div class="form-floating mb-3">
+                          <input type="text" class="form-control" id="floatingInput" name="slots" value={{cart.slots}} placeholder="name@example.com">
+                          <label for="floatingInput">Participants</label>
+                        </div>
+                        {% if cart.end_date %}
+                          <div class="form-floating mb-3">
+                            <input type="date" class="form-control" id="floatingPassword" name="start_date" value="{{cart.start_date|date:'Y-m-d'}}" placeholder="Password">
+                            <label for="floatingPassword">Date from</label>
+                          </div>
+                          <div class="form-floating mb-3">
+                            <input type="date" class="form-control" id="floatingPassword" name="end_date" value="{{cart.end_date|date:'Y-m-d'}}" placeholder="Password">
+                            <label for="floatingPassword">Date to</label>
+                          </div>
+                        {% else %}
+                          <div class="form-floating mb-3">
+                            <input type="date" class="form-control" id="floatingPassword" name="start_date"  value="{{cart.start_date|date:'Y-m-d'}}" placeholder="Password">
+                            <label for="floatingPassword">Tour Date</label>
+                          </div>
+                        {% endif %}
+                        
+                        <div class="form-floating mb-3">
+                          <select class="form-select" aria-label="selectTime" name="tour_time"  required>
+                            <option value={{cart.tour_time}} selected>{{cart.tour_time}}</option>
+                            <option value="06.30 a.m. - 09.30 a.m.">06.30 a.m. - 09.30 a.m.</option>
+                            <option value="10.30 a.m. - 12.30 a.m.">10.30 a.m. - 12.30 a.m.</option>
+                            <option value="12.30 p.m. - 02.30 p.m.">12.30 p.m. - 02.30 p.m.</option>
+                          </select>
+                          <label for="floatingPassword">Tour time</label>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-outline-success">Update</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+      </div>
     </div>
-    <div class="col-sm-2 text-center">
-      <p>Participants</p>
-      <p>1,5,17..</p>
-      <!--<input type="number" class="form-control" id="partcipants2" placeholder="1,5,17..." name="slots" required>-->
-    </div>
-    <div class="col-sm-2 text-center">
-      <p>Per person</p>
-      $700
-    </div>
-    <div class="col-sm-2 text-center">
-      <p>Total Cost</p>
-      $2000
-    </div>
-    <div class="col-sm-1 text-center">
-      <a class="link-success" href="#"><i class="fa-solid fa-pen"></i><p>edit</p></a>
-    </div>
-    <div class="col-sm-1 text-center">
-      <a class="link-danger" href="#"><i class="fa-solid fa-trash"></i><p>delete</p></a>
-    </div>
-  </div>
-  <hr>
-  <div class="row text-center" id="item3Container">
-    <div class="col-sm-4 text-center">
-      <h5>Item name</h5>
-      <br>
-      <p>Item description</p>
-    </div>
-    <div class="col-sm-2 text-center">
-      <p>Participants</p>
-      <p>1,5,17..</p>
-      <!--<input type="number" class="form-control" id="partcipants3" placeholder="1,5,17..." name="slots" required>-->
-    </div>
-    <div class="col-sm-2 text-center">
-      <p>Per person</p>
-      $700
-    </div>
-    <div class="col-sm-2 text-center">
-      <p>Total Cost</p>
-      $2000
-    </div>
-    <div class="col-sm-1 text-center">
-      <a class="link-success" href="#"><i class="fa-solid fa-pen"></i><p>edit</p></a>
-    </div>
-    <div class="col-sm-1 text-center">
-      <a class="link-danger" href="#"><i class="fa-solid fa-trash"></i><p>delete</p></a>
-    </div>
-  </div>
-  <hr>
-  <div class="row text-center" id="item4Container">
-    <div class="col-sm-4">
-      <h5>Item name</h5>
-      <br>
-      <p>Item description</p>
-    </div>
-    <div class="col-sm-2">
-      <p>Participants</p>
-      <p>1,5,17..</p>
-      <!--<input type="text" class="form-control" id="partcipants4" placeholder="1,5,17..." name="slots" required>-->
-    </div>
-    <div class="col-sm-2 ">
-      <p>Per person</p>
-      $700
-    </div>
-    <div class="col-sm-2 ">
-      <p>Total Cost</p>
-      $2000
-    </div>
-    <div class="col-sm-1 ">
-      <a class="link-success" href="#"><i class="fa-solid fa-pen"></i><p>edit</p></a>
-    </div>
-    <div class="col-sm-1 ">
-      <a class="link-danger" href="#"><i class="fa-solid fa-trash"></i><p>delete</p></a>
-    </div>
-  </div>
-  <hr>
+    <hr>
+  {% endfor %}
   <div class="row text-center" id="item5Container">
     <div class="col-sm-8">
       <!--<h5>Summary</h5>
@@ -119,7 +119,7 @@
     </div>
     <div class="col-sm-2 ">
       <p>Total Cost</p>
-      $8000
+      ${{total}}
     </div>
     <!--<div class="col-sm-1 text-center">
       <a class="link-success" href="#" title="edit details"><i class="fa-solid fa-pen"></i></a>
@@ -131,7 +131,7 @@
   <hr>
   <div class="row pb-3 justify-content-center">
     <div class="col-sm-8">
-      <a class="btn btn-lg btn-success d-block" role="button" href="#">Continue to checkout</a>
+      <a class="btn btn-lg btn-success d-block" role="button" href="{% url 'checkout' id %}">Continue to checkout</a>
     </div>
   </div>
 </div>

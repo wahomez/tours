@@ -1,4 +1,4 @@
-from django.shortcuts import render, HttpResponse, redirect
+from django.shortcuts import render, HttpResponse, redirect, get_object_or_404
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -11,19 +11,21 @@ import paypalrestsdk
 import requests
 import json
 import stripe
+from django.db.models import F, Sum
 from .keys import *
 from .mpesa import ac_token
 from decimal import Decimal
 # from paypal.standard.forms import PayPalPaymentsForm
 from django.conf import settings
-from django.http import JsonResponse, HttpResponseServerError, HttpResponseBadRequest
-from datetime import datetime
+from django.http import JsonResponse, HttpResponseServerError, HttpResponseBadRequest, HttpResponseRedirect
+from datetime import datetime, date
 # from .utils import create_invoice_pdf
 from django.views.decorators.csrf import csrf_exempt
 from requests.auth import HTTPBasicAuth
 import base64
 from google_currency import convert
 from .forms import TourForm, TourForm_1
+from django.core.exceptions import ValidationError
 
 
 
@@ -84,7 +86,7 @@ def Excursions(request):
     return render(request, "excursions.html", context)
 
 
-@login_required(login_url="login")
+@login_required(login_url="signin")
 def destination_page(request, pk):
     tours = Destination.objects.filter(id=pk)
     destination = Destination.objects.get(id=pk)
@@ -98,19 +100,39 @@ def destination_page(request, pk):
     if request.method == "POST":
         slots = request.POST['slots']
         tour_time = request.POST['tour-time']
+        slots = int(slots)
+        if slots <= 0:
+            # print("Error in slots")
+            messages.success(request, "Slots must be more than 0!")
+            return redirect("destination", pk)
         
         tour = destination
         if duration == 1:
             start_date = request.POST['start-date']
             end_date = None
         else:
-            start_date = request.POST['start-date']
-            end_date = request.POST['end-date']
+            start_date_str = request.POST['start-date']
+            end_date_str = request.POST['end-date']
+            try:
+                start_date = datetime.strptime(start_date_str, '%Y-%m-%d').date()
+                end_date = datetime.strptime(end_date_str, '%Y-%m-%d').date()
+
+                if end_date <= start_date:
+                    # print("Error in dates")
+                    messages.success(request, "Error in dates! To date must be after from date")
+                    return redirect("destination", pk)
+                    # raise ValidationError('To date must be after from date')
+            except (ValueError, TypeError, ValidationError):
+                print("Doesn't work")
+                return render(request, 'destination.html', {'error': 'Invalid date range'})
             
         booking = Booking.objects.create(user=request.user, tour=tour, slots=slots, start_date=start_date, end_date=end_date, tour_time=tour_time)
         booking.save()
-        messages.success(request, "You have booked a tour successfully. Proceed to checkout!")
-        return redirect("checkout", booking_id=booking.id)
+        cart, created = Cart.objects.get_or_create(user=request.user, cleared=False)
+        cart.booking.add(booking)
+        
+        messages.success(request, "You have booked a tour successfully. View in cart!")
+        return redirect("cart")
     
     else:
         context = {
@@ -143,7 +165,7 @@ def hikingAdventure(request):
     }
     return render(request, "hikingadventuretours.html", context)
 
-@login_required(login_url="login")
+@login_required(login_url="signin")
 def Review_tour(request, pk):
     tour = Destination.objects.get(id=pk)
     print("Toour: ", tour)
@@ -155,7 +177,7 @@ def Review_tour(request, pk):
         tour_review = Review.objects.create(user=user,tour=tour, comment=comment)
         tour_review.save()
         messages.success(request, ("Review sent successfully"))
-        return redirect("destination", pk )
+        return redirect(request.META.get('HTTP_REFERER', '/'))
     else:
 
         context = {
@@ -201,20 +223,150 @@ def login_user(request):
     else:
         return render(request, "login.html")
 
-@login_required(login_url="login")
+@login_required(login_url="signin")
 def logout_user(request):
     logout(request)
     messages.success(request, ("You have successfully logged out"))
-    return redirect("/")
+    return redirect("signin")
 
+@login_required(login_url="signin")
 def cart(request):
-    return render(request, "cart.html")
+    carts = Cart.objects.get(user=request.user, cleared=False)
+    cart_id = carts.id
+    cart = Booking.objects.filter(booking=cart_id)
+    
+    tours = carts.booking
+
+    # duration = tours.duration
+   
+    tour_count = tours.count()
+
+    # bookings = carts.booking.all()
+    # print("Booking: ", bookings)
+    
+    total = 0
+    
+    for booking in cart:
+        tour_amount = booking.tour.amount
+        # print("Amount:", tour_amount)
+        slots = booking.slots
+        # print("Slots:", slots)
+        booking_total = tour_amount * slots
+        # print("Total:", booking_total)
+        total += booking_total
+
+    # form = TourForm(instance=booking)
+    # if duration == 1:
+    #     form = TourForm_1(instance=booking)
+    # else:
+    #     form = TourForm(instance=booking)
+   
+    context = {
+        "carts" : cart,
+        "counts" : tour_count,
+        "total" : total,
+        "id" : cart_id
+        # "form" : form
+    }
+    return render(request, "cart.html", context)
+
+def cart_update(request, pk):
+    if request.method == "POST":
+        booking = Booking.objects.get(id=pk)
+        slots = request.POST["slots"]
+        slots = int(slots)
+        start_date = request.POST["start_date"]
+
+        # Check if start_date is after the current date
+        current_date = date.today()
+        if start_date < str(current_date):
+            messages.error(request, "Start date should be after the current date.")
+            return redirect(request.META.get('HTTP_REFERER', '/'))
+        
+        try:
+            if request.POST["end_date"]:
+                end_date = request.POST["end_date"]
+
+                #Check if end_date is after start_date
+                try:
+                    start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+                    end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+
+                    if end_date <= start_date:
+                        # print("Error in dates")
+                        messages.success(request, "Error in dates! To date must be after from date")
+                        return redirect(request.META.get('HTTP_REFERER', '/'))
+                        # raise ValidationError('To date must be after from date')
+                except (ValueError, TypeError, ValidationError):
+                    print("Doesn't work")
+                    return redirect(request.META.get('HTTP_REFERER', '/'))
+            else:
+                end_date = None
+        except:
+            end_date = None
+            print("Error")
+        tour_time = request.POST["tour_time"]
+
+        
+        
+        booking.slots = slots
+        booking.start_date = start_date
+        booking.end_date = end_date
+        booking.tour_time = tour_time
+        booking.save()
+        print("worked")
+        messages.success(request, "Tour was successfully updated!")
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+    else:
+        print("error")
+        messages.success(request, "Error in form!")
+        return redirect(request.META.get('HTTP_REFERER', '/'))
+
+def delete_tour(request, pk):
+    cart = Booking.objects.get(id=pk)
+    cart.delete()
+    messages.success(request, "Tour was successfully deleted from the cart.")
+    return redirect(request.META.get('HTTP_REFERER', '/'))
 
 def signin(request):
-    return render(request, "signin.html")
+    if request.method == "POST":
+        email = request.POST['email']
+        password = request.POST['password']
+        user = authenticate(request, email=email, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, ("You are logged in successfully"))
+            next_url = request.POST.get('next', '/')
+            return HttpResponseRedirect(next_url)
+        else:
+            messages.success(request, ("There was an error when login in!"))
+            return redirect("signin")
+
+    else:
+        return render(request, "signin.html")
 
 def signup(request):
-    return render(request, "signup.html")
+    if request.method =="POST":
+        email = request.POST['email']
+        username = request.POST['username']
+        password1 = request.POST['password1']
+        password2 =  request.POST['password2']
+        if password1 == password2:
+            form = User.objects.create(email = email, username=username, password=password1)
+            form.save()
+            user = authenticate(request, email=form.email, password=form.password)
+            if user is not None:
+                login(request, user)
+                messages.success(request, ("You are logged in successfully"))
+                return redirect(request.META.get('HTTP_REFERER', '/'))
+            else:
+                messages.success(request, ("There was an error with your form, Kindly fill again!"))
+                return redirect("signup")
+        else:
+            messages.success(request, "Password don't match!")
+            return redirect("signup")
+    else:       
+        return render(request, "signup.html")
 
 def tour_update(request, pk):
     booking = Booking.objects.get(id=pk)
@@ -227,10 +379,10 @@ def tour_update(request, pk):
             form.save(commit=False)
             form.save()
             messages.success(request, ("You have successfully updated the tour details!"))
-            return redirect("checkout", pk)
+            return redirect(request.META.get('HTTP_REFERER', '/'))
         else:
             messages.success(request, ("There was an error when updating your tour details. Kindly try again!"))
-            return redirect("checkout", pk)
+            return redirect(request.META.get('HTTP_REFERER', '/'))
     # print("Maybe woking")
     return redirect("checkout", pk)
 

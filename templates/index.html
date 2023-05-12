@@ -24,7 +24,9 @@
                                     <br>
                                 </div>
                             {% endfor %}
-                            
+                            <div class="mb-3">
+                                <center><p>Already have an account? <a class="link-success" href={% url 'signin'%}>Sign in</a></p></center>
+                            </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal">Close</button>
                                 <button type="submit" class="btn btn-outline-light" onclick="myFunction()">Register</button>
@@ -41,11 +43,11 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content" id="loginModalContent">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="loginModalLabel">Sign In</h5>
+                        <h5 class="modal-title" id="loginModalLabel">Sign Up</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <form class="needs-validation" method="POST" action={% url 'login'%} novalidate>
+                        <form class="needs-validation" method="POST" action={% url 'signup'%} novalidate>
                             {% csrf_token %}
                             <label for="userEmail" class="form-label">Email Address</label>
                             <div class="">
@@ -94,9 +96,9 @@
                 <a class="btn btn-outline-light" href="#toursContainer" role="button">Choose a tour</a>
                 {% if user.is_authenticated%}
                 {% else %}
-                    <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#loginModal">Sign In</button>
+                    <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#registerModal">Sign Up</button>
                 {% endif %}
-                <a class="btn btn-outline-light" role="button" href={% url "signin"%}> Sign In1 </a>
+                {% comment %} <a class="btn btn-outline-light" role="button" href={% url "signin"%}> Sign In1 </a> {% endcomment %}
 
             </div>
         </div>
