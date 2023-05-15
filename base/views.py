@@ -39,10 +39,8 @@ def Home(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.save()
-            
-            user = authenticate(request, email=user.email, password=request.POST['password1'])
+            form.save()
+            user = authenticate(request, email=form.email, password=request.POST['password1'])
             if user is not None:
                 login(request, user)
                 messages.success(request, ("You are logged in successfully"))
@@ -352,27 +350,26 @@ def signin(request):
         return render(request, "signin.html")
 
 def signup(request):
-    if request.method =="POST":
-        email = request.POST['email']
-        username = request.POST['username']
-        password1 = request.POST['password1']
-        password2 =  request.POST['password2']
-        if password1 == password2:
-            form = User.objects.create(email = email, username=username, password=password1)
-            form.save()
-            user = authenticate(request, email=form.email, password=form.password)
+    form = RegisterForm()
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.save()
+            
+            user = authenticate(request, email=user.email, password=request.POST['password1'])
             if user is not None:
                 login(request, user)
                 messages.success(request, ("You are logged in successfully"))
-                return redirect(request.META.get('HTTP_REFERER', '/'))
+                return redirect("/")
             else:
                 messages.success(request, ("There was an error with your form, Kindly fill again!"))
                 return redirect("signup")
         else:
-            messages.success(request, "Password don't match!")
+            messages.success(request, ("There was an error with your form, Kindly fill again!"))
             return redirect("signup")
-    else:       
-        return render(request, "signup.html")
+    else:
+        return render(request, "signup.html", {"form" : form})
 
 def tour_update(request, pk):
     booking = Booking.objects.get(id=pk)
