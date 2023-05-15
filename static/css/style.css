@@ -231,11 +231,26 @@
 }
 #featuredReviewsContainer{
     min-height: 50vh;
-    background-color: rgb(0, 0, 0);
+    background-color: rgba(8, 54, 0, 0.85);
     /*margin: 150px 0 0 0;*/
     padding: 50px 20px 20px 30px;
-    color: black;
 }
+#featuredReviewsInner{
+    /*max-width: 50vh;*/
+    color: floralwhite;
+    /*padding: 20px 200px;*/
+}
+.col-centered{
+    float: none;
+    margin: 0 auto;
+}
+/*.carousel-indicators .active{
+    color: #f00;
+}*/
+/*.carousel-indicators{
+    !*background-color: rgb(0, 0, 0);*!
+    color: white;
+}*/
 #excursionsContainer{
     min-height: 100vh;
     background-color: black;
