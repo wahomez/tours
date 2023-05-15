@@ -40,7 +40,10 @@
                 <input type="checkbox" value="remember-me"> Remember me
             </label>
         </div>
-        <input type="hidden" name="next" value="{{ request.GET.next }}">
+        {% if request.GET.next %}
+            <input type="hidden" name="next" value="{{ request.GET.next }}">
+        {% endif %}
+        
         <button class="w-100 btn btn-lg btn-success" type="submit" onclick="myFunction()">Sign in</button>
     </form>
 </main>

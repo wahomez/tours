@@ -52,6 +52,9 @@ class Destination(models.Model):
     itinerary = models.TextField(null=True, blank=True)
     
     poster = models.ImageField()
+    
+
+
 
     def __str__(self):
         return self.name
@@ -62,6 +65,8 @@ class Review(models.Model):
     comment = models.TextField()
     uploaded_date = models.DateTimeField(auto_now=True)
 
+    
+
     def __str__(self):
         return self.user.username
 
@@ -70,15 +75,17 @@ class Booking(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name="booking_user")
     tour = models.ForeignKey(Destination, on_delete=models.SET_NULL,null=True, related_name="booking_tour")
     slots = models.IntegerField()
-    paid = models.BooleanField(default=False)
     start_date = models.DateField(blank=True, null=True)
     end_date = models.DateField(blank=True, null=True)
     tour_time = models.CharField(max_length=200, blank=True, null=True)
     date = models.DateTimeField(auto_now_add=True)
     booking_total = models.IntegerField(blank=True, null=True)  # Add this field
+    discounted_total = models.IntegerField(blank=True, null=True)
 
     def save(self, *args, **kwargs):
         self.booking_total = self.slots * self.tour.amount  # Calculate the booking total
+        self.discounted_total = self.slots * (self.tour.amount - self.tour.discount)
+
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -118,10 +125,18 @@ class Cart(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_cart")
     booking = models.ManyToManyField(Booking, related_name="booking")
     created_date = models.DateTimeField(default=datetime.now, null=True)
+    paid = models.BooleanField(default=False)
     cleared = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.id)
+    
+    def createCart(sender, instance, created, **kwargs):
+        if created:
+            user_profile = Profile(user=instance)
+            user_profile.save()
+
+    post_save.connect(createCart, sender=User)
 
 
 

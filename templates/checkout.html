@@ -126,7 +126,6 @@
                 <br>~ Mark Twain, 1867 ~</p>
         </div>
         {% if checkout %}
-        {% for check in checkout %}
             <div class="row g-5">
                 <!--payment details sidebar 1-->
                 <div class="col-md-5 col-lg-4 order-md-last">
@@ -139,16 +138,16 @@
                         <a tabindex="0" class="badge bg-success rounded-pill" role="button" data-bs-toggle="popover" data-bs-trigger="focus, hover"
                         data-bs-title="My Tours" data-bs-placement="top" data-bs-html="true"
                         data-bs-content=
-                                "<a href='#' class='link-success'>Nairobi National Park Tour</a>
+                                "{% for check in carts%}
+                                <a href='#' class='link-success'>{{check.tour.name}}</a>
                                 <br>
-                                <a href='#' class='link-success'>The Karen Blixen Museum Tour</a>
-                                <br>
-                                <a href='#' class='link-success'>Kiambethu Farm Tour</a>
-                                <br>
-                                <a href='#' class='link-success'>All tours</a>">{{check.tour.count}}3 tours</a>
+                                {% endfor %}
+                                ">{{counts}} tours</a>
                     </h4>
-                    <h6 class="text-muted">{{check.tour}}</h6>
+                    
                     <ul class="list-group mb-3">
+                        {% for check in carts  %}
+                        <h6 class="text-muted">{{check.tour}}</h6>
                         <li class="list-group-item d-flex justify-content-between lh-sm">
                             <div>
                                 <h6 class="my-0">Per person</h6>
@@ -184,8 +183,16 @@
                         </li>
                         <li class="list-group-item d-flex justify-content-between">
                             <span>Total (USD)</span>
+                            <strong>${{check.discounted_total}}</strong>
+                        </li>
+                        
+                        <hr>
+                        {% endfor %}
+                        <li class="list-group-item d-flex justify-content-between">
+                            <span><strong> Grand Total (USD)</strong></span>
                             <strong>${{total}}</strong>
                         </li>
+                        
                     </ul>
 
                     <!--<form class="card p-2">
@@ -287,7 +294,7 @@
 
                             <div class="col-12">
                                 <label for="email" class="form-label">Email <span class="text-muted"></span></label>
-                                <input type="email" class="form-control" name="email" placeholder="you@example.com" value={{check.user.email}}>
+                                <input type="email" class="form-control" name="email" placeholder="you@example.com" value={{request.user.email}}>
                                 <div class="invalid-feedback">
                                     Please enter a valid email address
                                 </div>
@@ -309,6 +316,7 @@
 
                     <h4>Tour(s) Details</h4>
                     <!--<form> -->
+                        {% for check in  carts%}
                         <div class="row g-3">
                             <div class="input-group col-auto">
                                 <label class="input-group-text" for="tourDate">My tours</label>
@@ -322,9 +330,11 @@
                                     <label class="input-group-text" for="tourTime">Tour time(s)</label>
                                     <input class="form-control" type="text" value="{{check.tour_time}}" aria-label="tourTime" name="tourTime" readonly>
                                 </div>
-                                <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                {% comment %} <button type="button" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                     Update
-                                </button>
+                                </button> {% endcomment %}
+                        {% endfor %}
+                        
                                 
                                 {% comment %} <a href="{% url 'destination' %}" type="button" class=""></a> {% endcomment %}
 
@@ -354,6 +364,7 @@
                         </div>
                         <hr class="my-4">
                         <div class="form-check">
+                        {% for check in checkout  %}
                             {% if check.paid == True %}
                                 <input class="form-check-input" type="checkbox" value="" id="flexCheckCheckedDisabled" checked disabled>
                             {% else %}
@@ -366,6 +377,10 @@
                         </div>
 
                         <hr class="my-4">
+                        
+                        
+                        
+                        {% comment %} {{checkout.paid}} {% endcomment %}
 
                         {% if check.paid == True %}
                             <button class="w-100 btn btn-success btn-lg mb-5" type="submit">Complete Checkout</button>
@@ -373,12 +388,12 @@
                             <button class="w-100 btn btn-success btn-lg mb-5" type="submit" disabled>Complete Checkout</button>
                             
                         {% endif %}
-                        
+                        {% endfor %}
                         {% comment %} <button class="w-100 btn btn-success btn-lg mb-5" type="submit">Complete Checkout</button> {% endcomment %}
                     </form>
                 </div>
             </div>
-        {% endfor %}
+        {% comment %} {% endfor %} {% endcomment %}
         {% endif %}
 
         

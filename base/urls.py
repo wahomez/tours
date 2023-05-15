@@ -51,6 +51,7 @@ urlpatterns = [
     path('paypal/cancel_payment/', views.cancel_payment, name='paypal-test/cancel'),
     # path("update-cart/", views.update_cart, name="update_cart"),
     path("delete-tour/<int:pk>/", views.delete_tour, name="delete_tour"),
+    path("delete-cart/<int:pk>/", views.delete_cart, name="delete_cart"),
     
     # path('get_access_token/', views.get_access_token, name='get_access_token'),
     # path('get_payment_details/<str:payment_id>/', views.get_payment_details, name='get_payment_details'),

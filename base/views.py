@@ -231,45 +231,45 @@ def logout_user(request):
 
 @login_required(login_url="signin")
 def cart(request):
-    carts = Cart.objects.get(user=request.user, cleared=False)
-    cart_id = carts.id
-    cart = Booking.objects.filter(booking=cart_id)
+        carts = Cart.objects.get(user=request.user, cleared=False)
+        cart_id = carts.id
+        cart = Booking.objects.filter(booking=cart_id)
+        
+        tours = carts.booking
+
+        # duration = tours.duration
     
-    tours = carts.booking
+        tour_count = tours.count()
 
-    # duration = tours.duration
-   
-    tour_count = tours.count()
+        # bookings = carts.booking.all()
+        # print("Booking: ", bookings)
+        
+        total = 0
+        
+        for booking in cart:
+            tour_amount = booking.tour.amount
+            # print("Amount:", tour_amount)
+            slots = booking.slots
+            # print("Slots:", slots)
+            booking_total = tour_amount * slots
+            # print("Total:", booking_total)
+            total += booking_total
 
-    # bookings = carts.booking.all()
-    # print("Booking: ", bookings)
+        # form = TourForm(instance=booking)
+        # if duration == 1:
+        #     form = TourForm_1(instance=booking)
+        # else:
+        #     form = TourForm(instance=booking)
     
-    total = 0
-    
-    for booking in cart:
-        tour_amount = booking.tour.amount
-        # print("Amount:", tour_amount)
-        slots = booking.slots
-        # print("Slots:", slots)
-        booking_total = tour_amount * slots
-        # print("Total:", booking_total)
-        total += booking_total
-
-    # form = TourForm(instance=booking)
-    # if duration == 1:
-    #     form = TourForm_1(instance=booking)
-    # else:
-    #     form = TourForm(instance=booking)
-   
-    context = {
-        "carts" : cart,
-        "counts" : tour_count,
-        "total" : total,
-        "id" : cart_id
-        # "form" : form
-    }
-    return render(request, "cart.html", context)
-
+        context = {
+            "carts" : cart,
+            "counts" : tour_count,
+            "total" : total,
+            "id" : cart_id
+            # "form" : form
+        }
+        return render(request, "cart.html", context)
+        
 def cart_update(request, pk):
     if request.method == "POST":
         booking = Booking.objects.get(id=pk)
@@ -326,6 +326,12 @@ def delete_tour(request, pk):
     cart = Booking.objects.get(id=pk)
     cart.delete()
     messages.success(request, "Tour was successfully deleted from the cart.")
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+def delete_cart(request, pk):
+    cart = Cart.objects.get(id=pk)
+    cart.delete()
+    messages.success(request, "Cart was successfully been deleted.")
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
 def signin(request):
@@ -386,37 +392,63 @@ def tour_update(request, pk):
     # print("Maybe woking")
     return redirect("checkout", pk)
 
-
+@login_required(login_url="signin")
 def checkout(request, booking_id):
-    booking = Booking.objects.get(id=booking_id)
+    carts = Cart.objects.get(user=request.user, cleared=False)
+    cart_id = carts.id
+    cart = Booking.objects.filter(booking=cart_id)
+    # booking = Booking.objects.get(id=booking_id)
+    booking = carts.booking
+    tours = carts.booking
+    # tour = booking.tour
+    # booking_id = booking.id
     try:
         payment = Payment.objects.get(booking=booking)
         payment_date = payment.date
         # print(payment_date)
     except:
         print("Error in date")
-    checkout = Booking.objects.filter(id=booking_id)
-    price = booking.tour.amount
-    discount = booking.tour.discount
-    discounted_total = price-discount
-    people = booking.slots
-    total = discounted_total*people
+    checkout = Cart.objects.filter(user=request.user, cleared=False)
+    tour_count = booking.count()
+
+        # bookings = carts.booking.all()
+        # print("Booking: ", bookings)
+        
+    total = 0
+        
+    for booking in cart:
+        tour_amount = booking.tour.amount
+        discount = booking.tour.discount
+        discounted_total = tour_amount-discount
+            # print("Amount:", tour_amount)
+        slots = booking.slots
+            # print("Slots:", slots)
+        booking_total = discounted_total * slots
+            # print("Total:", booking_total)
+        total += booking_total
+    # price = booking.tour.amount
+    # discount = booking.tour.discount
+    # discounted_total = price-discount
+    # people = booking.slots
+    # total = discounted_total*people
     json_string = convert('usd', 'kes', total)
     convert_total = json.loads(json_string)
     converted_total = convert_total["amount"]
     payment_date = None
 
-    duration = booking.tour.duration
-    # print("Tour:", tour)
+    # duration = booking.tour.duration
+    # # print("Tour:", tour)
 
-    if duration == 1:
-        form = TourForm_1(instance=booking)
-    else:
-        form = TourForm(instance=booking)
+    # if duration == 1:
+    #     form = TourForm_1(instance=booking)
+    # else:
+    #     form = TourForm(instance=booking)
     
     # total = convert_total["amount"]
     
     booking = booking.id
+    tour_count = tours.count()
+    # form = TourForm(instance=booking)
     # print("Final dict: ", convert_total)
     # print("Final price: ", final_total)
     
@@ -428,8 +460,8 @@ def checkout(request, booking_id):
         email = request.POST["email"]
         tour = request.POST["tour"]
         tour_date = request.POST["tourDate"]
-        price = price
-        slots = people
+        price = tour_amount
+        slots = slots
         total = total
         payment_date = payment_date
         invoice = Invoice.objects.create(first_name=first_name, last_name=last_name, email=email, tour=tour, tour_date=tour_date, price=price, slots=slots, total=total, payment_date=payment_date)
@@ -451,11 +483,14 @@ def checkout(request, booking_id):
 
     else:
         context = {
+        "carts" : cart,
         "checkout" : checkout,
+        # "tours" : tour
         "total" : total,
         'booking' : booking, 
         "converted_total" : converted_total,
-        "form" : form
+        "counts" : tour_count
+        # "form" : form
         }
 
         return render(request, "checkout.html", context)
@@ -468,7 +503,7 @@ def payment_cancel(request):
 
 
 def mpesa_payment(request, pk):
-    booking = Booking.objects.get(id=pk)
+    booking = Cart.objects.get(user=request.user, cleared=False)
     #get payment details from form
     if booking.paid == True:
         messages.success(request, ("Your tour is already paid for!"))
@@ -477,13 +512,14 @@ def mpesa_payment(request, pk):
         if request.method == "POST":
             mobile = request.POST["mobile"]
             amount = request.POST["amount"]
-            print()
+            # print()
             print("KEY:", pk)
             # order = Order.objects.get(order_id=pk)
-            tour = booking.tour.name
+            
             # print("Tour:", tour)
             booking_id = booking.id
             # print("ID:", booking_id)
+
         #get access token
         auth_url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
         auth_response = requests.get(auth_url, auth=HTTPBasicAuth(CONSUMER_KEY, CONSUMER_SECRET))
@@ -512,7 +548,7 @@ def mpesa_payment(request, pk):
             "PhoneNumber": "254" + mobile,
             "CallBackURL": "https://cruizesafaris.com/callback/",
             "AccountReference": "Cruize Beyond",
-            "TransactionDesc": tour
+            "TransactionDesc": booking
         }
         #stk push api
         response = requests.request("POST", 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest', headers = headers, json = payload)
@@ -523,9 +559,9 @@ def mpesa_payment(request, pk):
         try:
             if code["ResponseCode"] == '0':
                 print("Complete pin prompt sent to your device to complete payment!")
-                booking = Booking.objects.get(id=booking_id)
-                payment = Payment.objects.create(user=booking.user, booking=booking)
-                Booking.objects.update(paid=True)
+                booking = Cart.objects.get(id=booking_id)
+                payment = Payment.objects.create(user=booking.user, cart=booking)
+                Cart.objects.update(paid=True)
                 payment.save()
                 messages.success(request, ("Payment request was sent successfully!"))
                 return redirect("checkout", booking_id)
@@ -610,13 +646,32 @@ def create_payment(request, pk):
         client_secret= CLIENT_SECRET,
         mode= "sandbox"
     )
-    booking = Booking.objects.get(id=pk)
-    tour = booking.tour.name
-    price = booking.tour.amount
-    people = booking.slots
-    total = price*people
-    booking_id = booking.id
-    if booking.paid == True:
+    
+    
+    #things needed in api endpoint
+    carts  = Cart.objects.get(user=request.user, cleared=False)
+    cart_id = carts.id
+    cart = Booking.objects.filter(booking=cart_id)
+    booking = carts.booking
+
+    total = 0
+        
+    for booking in cart:
+        tour_amount = booking.tour.amount
+        discount = booking.tour.discount
+        discounted_total = tour_amount-discount
+            # print("Amount:", tour_amount)
+        slots = booking.slots
+            # print("Slots:", slots)
+        booking_total = discounted_total * slots
+            # print("Total:", booking_total)
+        total += booking_total
+
+    name = carts
+    total = total
+    
+    booking_id = cart_id
+    if carts.paid == True:
         messages.success(request, ("Your tour is already paid for!"))
         return redirect("checkout", pk)
     else:
@@ -632,11 +687,11 @@ def create_payment(request, pk):
             "transactions": [{
                 "item_list": {
                     "items": [{
-                        "name": tour,
+                        "name": carts,
                         "sku": booking_id,
-                        "price": price,
+                        "price": total,
                         "currency": "USD",
-                        "quantity": people
+                        "quantity": "1"
                     }]
                 },
                 "amount": {
@@ -664,9 +719,9 @@ def execute_payment(request):
     if payment.execute({"payer_id": payer_id}):
         reference_id = payment_id
         type_payment = "Paypal"
-        booking = Booking.objects.get(id=booking_id)
-        payment = Payment.objects.create(user=booking.user, booking=booking, reference_id=reference_id, type_payment=type_payment)
-        Booking.objects.update(paid=True)
+        booking = Cart.objects.get(user=request.user, cleared=False)
+        payment = Payment.objects.create(user=booking.user, cart=booking, reference_id=reference_id, type_payment=type_payment)
+        Cart.objects.update(paid=True)
         payment.save()
         messages.success(request, ("Payment was successfull. You can complete Checkout!"))
         return redirect("checkout", booking_id)
