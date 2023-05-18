@@ -23,13 +23,13 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 
-#Create Profile when new User Signs Up
-def createProfile(sender, instance, created, **kwargs):
-    if created:
-        user_profile = Profile(user=instance)
-        user_profile.save()
+# #Create Profile when new User Signs Up
+# def createProfile(sender, instance, created, **kwargs):
+#     if created:
+#         user_profile = Profile(user=instance)
+#         user_profile.save()
 
-post_save.connect(createProfile, sender=User)
+# post_save.connect(createProfile, sender=User)
 
 class Destination(models.Model):
     categories = [
@@ -127,6 +127,10 @@ class Cart(models.Model):
     created_date = models.DateTimeField(default=datetime.now, null=True)
     paid = models.BooleanField(default=False)
     cleared = models.BooleanField(default=False)
+
+    #Keep count of items in cart
+    def number_of_items(self):
+        return self.booking.count()
 
     def __str__(self):
         return str(self.id)

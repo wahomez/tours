@@ -39,15 +39,21 @@ def Home(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
+            # user = form.save(commit=False)
             form.save()
-            user = authenticate(request, email=form.email, password=request.POST['password1'])
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password1']
+            print("email-", email)
+            print("password-", password)
+            user = authenticate(request, username=email, password=password)
+            # user = authenticate(request, username=user.email, password=request.POST['password1'])
             if user is not None:
                 login(request, user)
                 messages.success(request, ("You are logged in successfully"))
                 return redirect("/")
             else:
                 messages.success(request, ("There was an error with your form, Kindly fill again!"))
-                return redirect("/")
+                return redirect("signup")
         else:
             messages.success(request, ("There was an error with your form, Kindly fill again!"))
             return redirect("/")
@@ -229,7 +235,8 @@ def logout_user(request):
 
 @login_required(login_url="signin")
 def cart(request):
-        carts = Cart.objects.get(user=request.user, cleared=False)
+        carts = get_object_or_404(Cart, user=request.user, cleared=False)
+        # carts = Cart.objects.get(user=request.user, cleared=False)
         cart_id = carts.id
         cart = Booking.objects.filter(booking=cart_id)
         
@@ -336,7 +343,7 @@ def signin(request):
     if request.method == "POST":
         email = request.POST['email']
         password = request.POST['password']
-        user = authenticate(request, email=email, password=password)
+        user = authenticate(request, username=email, password=password)
         if user is not None:
             login(request, user)
             messages.success(request, ("You are logged in successfully"))
@@ -354,10 +361,14 @@ def signup(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.save()
-            
-            user = authenticate(request, email=user.email, password=request.POST['password1'])
+            # user = form.save(commit=False)
+            form.save()
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password1']
+            print("email-", email)
+            print("password-", password)
+            user = authenticate(request, username=email, password=password)
+            # user = authenticate(request, username=user.email, password=request.POST['password1'])
             if user is not None:
                 login(request, user)
                 messages.success(request, ("You are logged in successfully"))

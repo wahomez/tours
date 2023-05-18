@@ -62,9 +62,9 @@
                 <span class="badge rounded-pill text-bg-dark">4</span>
             </i>
         </a>-->
-        
         <a class="btn btn-light position-relative" role="button" href={% url "cart"%}>
             <i class="fa-solid fa-cart-shopping">
+                
                 {% comment %} {% with cart_count=user.user_cart.filter(cleared=False).count %} {% endcomment %}
                 {% with cart_count=user.user_cart.count %}
                     {% if cart_count > 0 %}
