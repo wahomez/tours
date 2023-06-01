@@ -3,11 +3,6 @@
 {% load static %}
 
 <div data-bs-theme="dark" id="destinationContainer" data-bs-spy="scroll" data-bs-target="#review">
-    <!--<div class="row" id="destinationHeaderImage">
-        <div class="col">
-            <img src="../images/1.jpg" class="img-fluid">
-        </div>
-    </div>-->
     {% if tours%}
         {% for tour in tours%}
             <div class="row justify-content-center text-center" id="destinationContainerHeading">
@@ -28,7 +23,6 @@
                         <strong>Tour notes:</strong>
                         <br>
                         {{tour.notes}}
-
                     </p>
                 </div>
                 <div class="col-sm-4">
@@ -160,7 +154,7 @@
                             Review cannot be blank
                         </div>
                         <br>
-                        <button type="submit" class="btn btn-outline-primary">Submit</button>
+                        <button type="submit" class="btn btn-outline-success">Submit</button>
                     </div>
                 </form>
             </div>
@@ -190,7 +184,10 @@
             {% endfor %}
             </div>
             {% else %}
-                <h6>No reviews currently available</h6>
+            <div class="alert alert-success" role="alert">
+                <center><h6>No reviews currently available</h6></center>
+              </div>
+                
                 
             {% endif %}
             

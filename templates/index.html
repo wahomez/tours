@@ -110,22 +110,31 @@
             <div class="col-sm-2 col-md-3 mx-3" id="homeQuote">
                 <p><br>It is only in adventure that some people succeed in knowing themselves — in finding themselves.<br> ~ André Gide ~</p>
             </div>
+            
             <div class="col-sm-5 mx-3 mt-5">
+                <h6>Search tour using either type or specific destination</h6>
+                <form method="post" action="{% url 'search' %}"> 
+                    {% csrf_token %}
                 <div class="input-group">
-                    <select class="form-select" aria-label="Example select with button addon">
-                        <option>Tour type</option>
-                        <option value="1">Excursions</option>
-                        <option value="2">Safari Tours</option>
-                        <option value="3">Farm Tours</option>
+                    <select class="form-select" aria-label="Example select with button addon" name="tour-type">
+                        <option value="0">Tour type</option>
+                        <option value="excursion">Excursions</option>
+                        <option value="safari">Safari Tours</option>
+                        <option value="farm">Farm Tours</option>
+                        <option value="hikingadventure">Hiking Adventures</option>
                     </select>
-                    <select class="form-select" aria-label="Example select with button addon">
-                        <option>Destination</option>
-                        <option value="1">Nairobi National Park</option>
+                    <select class="form-select" aria-label="Example select with button addon" name="destination">
+                        <option value="0">Destination</option>
+                        {% for tour in tours  %}
+                            <option value="{{tour.id}}">{{tour.name}}</option>
+                        {% endfor %}
+                        
                         <option value="2">Karen Blixen Museum</option>
                         <option value="3">Bomas of Kenya</option>
                     </select>
-                    <button class="btn btn-outline-light" type="submit">Book Now</button>
+                    <button class="btn btn-outline-light" type="submit">Search Now</button>
                 </div>
+            `   </form>
             </div>
 
         </div>

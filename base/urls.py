@@ -52,6 +52,7 @@ urlpatterns = [
     # path("update-cart/", views.update_cart, name="update_cart"),
     path("delete-tour/<int:pk>/", views.delete_tour, name="delete_tour"),
     path("delete-cart/<int:pk>/", views.delete_cart, name="delete_cart"),
+    path("search-tour/", views.search_tour, name="search")
     
     # path('get_access_token/', views.get_access_token, name='get_access_token'),
     # path('get_payment_details/<str:payment_id>/', views.get_payment_details, name='get_payment_details'),

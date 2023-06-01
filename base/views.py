@@ -34,8 +34,26 @@ stripe.api_key = STRIPE_SECRET_KEY
 
 
 # Create your views here.
+
+#search function view
+def search_tour(request):
+    if request.method == "POST":
+        tour = request.POST['tour-type']
+        destination = request.POST['destination']
+        print("tour - ", destination)
+        #query destination
+        if destination != "0":
+            return redirect("destination", destination)
+        else:
+            if tour != "0":
+                return redirect(tour)
+    else:
+        print("Form ain't working")
+        return redirect("home")
+
 def Home(request):
     form = RegisterForm()
+    tours = Destination.objects.all()
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
@@ -60,7 +78,8 @@ def Home(request):
     else:
 
         context = {
-            "form" : form
+            "form" : form,
+            "tours" : tours
         }
         return render(request, 'index.html', context)
 
@@ -90,7 +109,7 @@ def Excursions(request):
     return render(request, "excursions.html", context)
 
 
-@login_required(login_url="signin")
+
 def destination_page(request, pk):
     tours = Destination.objects.filter(id=pk)
     destination = Destination.objects.get(id=pk)
@@ -235,7 +254,10 @@ def logout_user(request):
 
 @login_required(login_url="signin")
 def cart(request):
+        tour = Destination.objects.all()
         carts = get_object_or_404(Cart, user=request.user, cleared=False)
+        ncart = carts.booking.count()
+        print(ncart)
         # carts = Cart.objects.get(user=request.user, cleared=False)
         cart_id = carts.id
         cart = Booking.objects.filter(booking=cart_id)
@@ -270,7 +292,9 @@ def cart(request):
             "carts" : cart,
             "counts" : tour_count,
             "total" : total,
-            "id" : cart_id
+            "id" : cart_id,
+            'ncart' : ncart,
+            "tour" : tour
             # "form" : form
         }
         return render(request, "cart.html", context)
