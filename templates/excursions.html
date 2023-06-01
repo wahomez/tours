@@ -14,12 +14,31 @@
                 <div class="card">
                     <img src="{{tour.poster.url}}" class="card-img-top img-fluid" alt="...">
                     <div class="card-body">
-                        <h5 class="card-title">{{tour.name}}</h5>
+                        <h5 class="card-title">{{tour.name}} </h5>
                         <p class="card-text">
                             {{tour.description}}
                         </p>
-                        <a href="{% url 'destination' tour.id %}" class="btn btn-light">View tour</a>
-                        <button class="btn btn-outline-success"><s>$70</s> $55</button>
+                        <div class="container" id="cartContainer">
+                            <div class="row text-center" id="item5Container">
+                                <div class="col-sm-9">
+                                    <a href="{% url 'destination' tour.id %}" class="btn btn-light">View tour</a>
+                                    <button class="btn btn-outline-success"><s>${{tour.amount}}</s> ${{tour.discounted_total}}</button>
+                                {% comment %} <a type="button" href="#"><i class="fa fa-plus-circle" aria-hidden="true"></i></a> {% endcomment %}
+                                </div>
+                                {% if user in tour.likes.all %}
+                                <div class="col-sm-3">
+                                    {{tour.number_of_likes}} <a class="link-danger" href="{% url 'like' tour.id %}" ><i class="fa-regular fa-heart"></i><p>unlike</p></a>
+                                </div>
+                                {% else %}
+                                <div class="col-sm-3">
+                                    {{tour.number_of_likes}} <a class="link-danger" href="{% url 'like' tour.id %}" ><i class="fa-solid fa-heart"></i><p>like</p></a>
+                                </div>
+                                {% endif %}
+                                
+                            </div>
+                        </div>
+                        {% comment %} <i class="fa-solid fa-heart" style="color: #f11e33;"></i> {% endcomment %}
+                        
                         <a type="button" class="btn btn-outline-light d-grid mt-3" id="review" data-bs-toggle="modal" data-bs-target="#exampleModal{{tour.id}}">Leave a review</a>
                             <!-- Modal -->
                                 <div class="modal fade" id="exampleModal{{tour.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

@@ -44,7 +44,7 @@
     <br>
     <!--booking-->
     <div class="justify-content-center" id="destinationBooking">
-        <form class="row justify-content-center g-3 needs-validation" method="POST" novalidate>
+        <form class="row justify-content-center g-3 needs-validation" method="POST" action="{% url 'book' tour.id %}"  novalidate>
             {% csrf_token %}
             {% if tour.duration == 1 %}
                 <div class=" col-sm-3">

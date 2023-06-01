@@ -50,11 +50,19 @@ class Destination(models.Model):
     notes = models.TextField(null=True, blank=True)
     schedule = models.TextField(null=True, blank=True)
     itinerary = models.TextField(null=True, blank=True)
-    
+    discounted_total = models.IntegerField(blank=True, null=True)
+    likes = models.ManyToManyField(User, related_name="tour_like", blank="true")
     poster = models.ImageField()
-    
 
+    #keep track of like count
+    def number_of_likes(self):
+        return self.likes.count()
 
+    #calculate the amount after discount
+    def save(self, *args, **kwargs):
+        self.discounted_total = self.amount - self.discount
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name

@@ -108,18 +108,22 @@ def Excursions(request):
     }
     return render(request, "excursions.html", context)
 
-
-
-def destination_page(request, pk):
-    tours = Destination.objects.filter(id=pk)
+@login_required(login_url="signin")
+def tour_like(request, pk):
+    tour = get_object_or_404(Destination, id=pk)
+    if tour.likes.filter(id=request.user.id):
+        tour.likes.remove(request.user)
+        messages.success(request, "You have unliked a tour!")
+        return redirect("excursions")
+    else:
+        tour.likes.add(request.user)
+        messages.success(request, "You have liked a tour!")
+        return redirect("excursions")
+        
+@login_required(login_url="signin")
+def book_tour(request, pk):
     destination = Destination.objects.get(id=pk)
-    review = Review.objects.filter(tour=pk)
     duration = destination.duration
-    print("Duration:", duration)
-    # booking = Booking.objects.get(tour=pk, user=request.user)
-    # slots = booking.slots
-    # print("Booking:", slots)
-   
     if request.method == "POST":
         slots = request.POST['slots']
         tour_time = request.POST['tour-time']
@@ -156,13 +160,17 @@ def destination_page(request, pk):
         
         messages.success(request, "You have booked a tour successfully. View in cart!")
         return redirect("cart")
-    
     else:
-        context = {
+        return redirect("destination", pk)
+
+def destination_page(request, pk):
+    tours = Destination.objects.filter(id=pk)
+    review = Review.objects.filter(tour=pk)
+    context = {
         "tours" : tours,
         "review" : review,
-        }
-        return render(request, "destination.html", context)
+    }
+    return render(request, "destination.html", context)
 
 def Gallery(request):
     return render(request, "gallery.html")
