@@ -263,7 +263,11 @@ def logout_user(request):
 @login_required(login_url="signin")
 def cart(request):
         tour = Destination.objects.all()
-        carts = get_object_or_404(Cart, user=request.user, cleared=False)
+        try:
+            carts = Cart.objects.get(user=request.user, cleared=False)
+        except:
+            carts = Cart.objects.create(user=request.user, cleared=False)
+        
         ncart = carts.booking.count()
         print(ncart)
         # carts = Cart.objects.get(user=request.user, cleared=False)
@@ -437,6 +441,8 @@ def checkout(request, booking_id):
     carts = Cart.objects.get(user=request.user, cleared=False)
     cart_id = carts.id
     cart = Booking.objects.filter(booking=cart_id)
+    clear = carts.cleared
+    print("cleared?", clear)
     # booking = Booking.objects.get(id=booking_id)
     booking = carts.booking
     tours = carts.booking
@@ -506,6 +512,7 @@ def checkout(request, booking_id):
         payment_date = payment_date
         invoice = Invoice.objects.create(first_name=first_name, last_name=last_name, email=email, tour=tour, tour_date=tour_date, price=price, slots=slots, total=total, payment_date=payment_date)
         invoice.save()
+        Cart.objects.update(cleared=True)
         messages.success(request, ("Successfully completed checkout.Your invoice will be sent to your email shortly."))
         return redirect("/")
 
@@ -680,75 +687,97 @@ def charge(request):
     
     return render(request, 'checkout.html', {'publishable_key': STRIPE_PUBLIC_KEY})
 
+@login_required(login_url="signin")
 def create_payment(request, pk):
     paypalrestsdk.configure(
-        client_id= CLIENT_ID,
-        client_secret= CLIENT_SECRET,
-        mode= "sandbox"
+        client_id=CLIENT_ID,
+        client_secret=CLIENT_SECRET,
+        mode="sandbox"
     )
-    
-    
-    #things needed in api endpoint
-    carts  = Cart.objects.get(user=request.user, cleared=False)
-    cart_id = carts.id
-    cart = Booking.objects.filter(booking=cart_id)
-    booking = carts.booking
 
-    total = 0
-        
-    for booking in cart:
-        tour_amount = booking.tour.amount
-        discount = booking.tour.discount
-        discounted_total = tour_amount-discount
-            # print("Amount:", tour_amount)
-        slots = booking.slots
-            # print("Slots:", slots)
-        booking_total = discounted_total * slots
-            # print("Total:", booking_total)
-        total += booking_total
+    try:
+        # Retrieve necessary data from the database
+        carts = Cart.objects.get(user=request.user, cleared=False)
+        cart_id = str(carts.id)
+        cart = Booking.objects.filter(booking=cart_id)
+        booking = carts.booking
+        quantity = booking.count()
 
-    name = carts
-    total = total
-    
-    booking_id = cart_id
-    if carts.paid == True:
-        messages.success(request, ("Your tour is already paid for!"))
-        return redirect("checkout", pk)
-    else:
-        payment = paypalrestsdk.Payment({
-            "intent": "sale",
-            "payer": {
-                "payment_method": "paypal"
-            },
-            "redirect_urls": {
-                "return_url": "http://localhost:8000/paypal/execute_payment/",
-                "cancel_url": "http://localhost:8000/paypal/cancel_payment/"
-            },
-            "transactions": [{
-                "item_list": {
-                    "items": [{
-                        "name": carts,
-                        "sku": booking_id,
-                        "price": total,
-                        "currency": "USD",
-                        "quantity": "1"
-                    }]
-                },
-                "amount": {
-                    "total": total,
-                    "currency": "USD"
-                },
-                "description": "Transaction description.",
-                "custom": booking_id
-            }]
-        })
-        if payment.create():
-            for link in payment.links:
-                if link.rel == 'approval_url':
-                    return redirect(link.href)
+        total = Decimal('0.00')
+        items = []
+
+        for booking in cart:
+            tour_amount = booking.tour.amount
+            discount = booking.tour.discount
+            discounted_total = tour_amount - discount
+            slots = booking.slots
+            booking_total = discounted_total * slots
+            total += booking_total
+
+            item = {
+                "name": str(booking.tour),
+                "sku": str(booking.id),
+                "price": str(discounted_total),
+                "currency": "USD",
+                "quantity": str(slots)
+            }
+            items.append(item)
+
+        name = str(carts)  # Convert to a serializable type
+        total = str(total)  # Convert to a string
+
+        # Ensure the variables are accurate and serialized correctly
+        print("Name:", name)
+        print("Total:", total)
+
+        if carts.paid:
+            messages.success(request, "Your tour is already paid for!")
+            return redirect("checkout", pk)
         else:
-            return HttpResponseServerError
+            payment = paypalrestsdk.Payment({
+                "intent": "sale",
+                "payer": {
+                    "payment_method": "paypal"
+                },
+                "redirect_urls": {
+                    "return_url": "http://localhost:8000/paypal/execute_payment/",
+                    "cancel_url": "http://localhost:8000/paypal/cancel_payment/"
+                },
+                "transactions": [{
+                    "item_list": {
+                        "items": items
+                    },
+                    "amount": {
+                        "total": total,
+                        "currency": "USD"
+                    },
+                    "description": "Transaction description.",
+                    "custom": cart_id
+                }]
+            })
+
+            if payment.create():
+                for link in payment.links:
+                    if link.rel == 'approval_url':
+                        return redirect(link.href)
+            else:
+                # Handle the case where the payment creation fails
+                error_message = 'Failed to create PayPal payment: ' + json.dumps(payment.error)
+                print(error_message)
+                return HttpResponseServerError(error_message)
+
+    except Cart.DoesNotExist:
+        # Handle the case where the cart does not exist
+        error_message = 'Cart does not exist'
+        print(error_message)
+        return HttpResponseServerError(error_message)
+    except Exception as e:
+        # Handle any other exceptions that may occur
+        error_message = 'An error occurred: ' + str(e)
+        print(error_message)
+        return HttpResponseServerError(content=error_message)
     
+@login_required(login_url="signin")   
 def execute_payment(request):
     payment_id = request.GET.get('paymentId')
     payer_id = request.GET.get('PayerID')
@@ -760,7 +789,7 @@ def execute_payment(request):
         reference_id = payment_id
         type_payment = "Paypal"
         booking = Cart.objects.get(user=request.user, cleared=False)
-        payment = Payment.objects.create(user=booking.user, cart=booking, reference_id=reference_id, type_payment=type_payment)
+        payment = Payment.objects.create(user=booking.user, booking=booking, reference_id=reference_id, type_payment=type_payment)
         Cart.objects.update(paid=True)
         payment.save()
         messages.success(request, ("Payment was successfull. You can complete Checkout!"))

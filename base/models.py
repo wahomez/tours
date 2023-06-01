@@ -99,21 +99,6 @@ class Booking(models.Model):
     def __str__(self):
         return str(self.user) + str("-") + str(self.tour)
     
-class Payment(models.Model):
-    payment_choices = [
-        ("M-PESA", "M-PESA"),
-        ("Paypal", "Paypal"),
-        ("Stripe", "Stripe")
-    ]
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    booking = models.ForeignKey(Booking, on_delete=models.SET_NULL, null=True, related_name="payment_booking")
-    type_payment = models.CharField(max_length=200, choices=payment_choices, null=True, blank=True)
-    reference_id = models.CharField(max_length=200, blank=True, null=True)
-    date = models.DateTimeField(default=datetime.now, null=True)
-
-    def __str__(self):
-        return str(self.booking)
-    
 class Invoice(models.Model):
     invoice_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     first_name = models.CharField(max_length=200)
@@ -150,5 +135,19 @@ class Cart(models.Model):
 
     post_save.connect(createCart, sender=User)
 
+class Payment(models.Model):
+    payment_choices = [
+        ("M-PESA", "M-PESA"),
+        ("Paypal", "Paypal"),
+        ("Stripe", "Stripe")
+    ]
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    booking = models.ForeignKey(Cart, on_delete=models.SET_NULL, null=True, related_name="payment_booking")
+    type_payment = models.CharField(max_length=200, choices=payment_choices, null=True, blank=True)
+    reference_id = models.CharField(max_length=200, blank=True, null=True)
+    date = models.DateTimeField(default=datetime.now, null=True)
+
+    def __str__(self):
+        return str(self.booking)
 
 

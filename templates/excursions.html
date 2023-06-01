@@ -14,7 +14,7 @@
                 <div class="card">
                     <img src="{{tour.poster.url}}" class="card-img-top img-fluid" alt="...">
                     <div class="card-body">
-                        <h5 class="card-title">{{tour.name}} </h5>
+                        <h5 class="card-title">{{tour.name}}</h5>
                         <p class="card-text">
                             {{tour.description}}
                         </p>
@@ -22,7 +22,7 @@
                             <div class="row text-center" id="item5Container">
                                 <div class="col-sm-9">
                                     <a href="{% url 'destination' tour.id %}" class="btn btn-light">View tour</a>
-                                    <button class="btn btn-outline-success"><s>${{tour.amount}}</s> ${{tour.discounted_total}}</button>
+                                    <button class="btn btn-outline-success"><s>${{tour.amount}}</s>${{tour.discounted_total}}</button>
                                 {% comment %} <a type="button" href="#"><i class="fa fa-plus-circle" aria-hidden="true"></i></a> {% endcomment %}
                                 </div>
                                 {% if user in tour.likes.all %}
