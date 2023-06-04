@@ -740,8 +740,8 @@ def create_payment(request, pk):
                     "payment_method": "paypal"
                 },
                 "redirect_urls": {
-                    "return_url": "http://localhost:8000/paypal/execute_payment/",
-                    "cancel_url": "http://localhost:8000/paypal/cancel_payment/"
+                    "return_url": "https://cruizesafaris.com/paypal/execute_payment/",
+                    "cancel_url": "https://cruizesafaris.com/paypal/cancel_payment/"
                 },
                 "transactions": [{
                     "item_list": {
