@@ -3,8 +3,8 @@ from requests.auth import HTTPBasicAuth
 import json
 import requests
 
-key = "dsxA8QGfXN5MGxSwv5RzdueGodvd3KKc"
-secret = "WVjn4GiaSgPFPk5t"
+key = "lQKl01i0an6fv6fGVRVqHOZXbxGZs0Um"
+secret = "lQKl01i0an6fv6fGVRVqHOZXbxGZs0Um"
 
 def ac_token():
     mpesa_auth_url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"

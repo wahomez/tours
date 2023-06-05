@@ -551,6 +551,7 @@ def payment_cancel(request):
 
 def mpesa_payment(request, pk):
     booking = Cart.objects.get(user=request.user, cleared=False)
+
     #get payment details from form
     if booking.paid == True:
         messages.success(request, ("Your tour is already paid for!"))
@@ -572,6 +573,10 @@ def mpesa_payment(request, pk):
         auth_response = requests.get(auth_url, auth=HTTPBasicAuth(CONSUMER_KEY, CONSUMER_SECRET))
         access_token = auth_response.json()["access_token"]
         print("Token:", access_token)
+        amount = str(int(float(amount)))
+        # mobile = str(mobile)
+        print("amount:", amount)
+        print("mobile:", mobile)
 
         #get payment details
         # mobile = 254748373873
@@ -595,21 +600,17 @@ def mpesa_payment(request, pk):
             "PhoneNumber": "254" + mobile,
             "CallBackURL": "https://cruizesafaris.com/callback/",
             "AccountReference": "Cruize Beyond",
-            "TransactionDesc": booking
+            "TransactionDesc": str(booking)
         }
         #stk push api
         response = requests.request("POST", 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest', headers = headers, json = payload)
         
         code = response.json()
-        # print(code)
+        print(code)
 
         try:
             if code["ResponseCode"] == '0':
                 print("Complete pin prompt sent to your device to complete payment!")
-                booking = Cart.objects.get(id=booking_id)
-                payment = Payment.objects.create(user=booking.user, cart=booking)
-                Cart.objects.update(paid=True)
-                payment.save()
                 messages.success(request, ("Payment request was sent successfully!"))
                 return redirect("checkout", booking_id)
             else:
