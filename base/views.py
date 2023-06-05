@@ -27,9 +27,7 @@ from google_currency import convert
 from .forms import TourForm, TourForm_1
 from django.core.exceptions import ValidationError
 
-
-
-
+    
 stripe.api_key = STRIPE_SECRET_KEY
 
 
