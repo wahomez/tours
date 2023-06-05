@@ -32,6 +32,9 @@ stripe.api_key = STRIPE_SECRET_KEY
 
 
 # Create your views here.
+#reset password email template
+def reset_email(request):
+    return render(request, "reset_email.html")
 
 #search function view
 def search_tour(request):

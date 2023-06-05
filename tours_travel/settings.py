@@ -76,7 +76,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR /'templates'
+            BASE_DIR /'templates',
+            # BASE_DIR / 'templates' / 'registration',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -89,6 +90,9 @@ TEMPLATES = [
         },
     },
 ]
+
+PASSWORD_RESET_TEMPLATE_TEXT = 'registration/password_reset_email.txt'
+
 
 WSGI_APPLICATION = 'tours_travel.wsgi.application'
 
