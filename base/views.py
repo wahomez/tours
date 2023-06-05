@@ -560,7 +560,7 @@ def mpesa_payment(request, pk):
     else:
         if request.method == "POST":
             mobile = request.POST["mobile"]
-            amount = request.POST["amount"]
+            amount = 1
             # print()
             print("KEY:", pk)
             # order = Order.objects.get(order_id=pk)
@@ -624,6 +624,7 @@ def mpesa_payment(request, pk):
 @csrf_exempt
 def daraja_callback(request):
     print("Working!")
+    booking = Cart.objects.get(user=request.user, cleared=False)
     # Extract relevant data from the callback
     transaction_id = request.POST.get('TransID', '')
     transaction_status = request.POST.get('TransStatus', '')
@@ -632,12 +633,23 @@ def daraja_callback(request):
         if request.method == 'POST':
             # Retrieve the JSON data from the request body
             callback_data = json.loads(request.body)
+            print("Callback Data:", callback_data)
 
             # Check if the transaction was successful
-            if callback_data.get('Body.stkCallback.ResultCode') == '0':
+            if callback_data.get('Body', {}).get('stkCallback', {}).get('ResultCode') == 0:
                 # Handle the successful transaction
                 print("Callback Data:", callback_data)
-                messages.success(request, ("Payment was successfull. Complete Checkout!"))
+
+                type_payment = "M-PESA"
+                payment = Payment.objects.create(user=booking.user, booking=booking, reference_id=transaction_id, type_payment=type_payment)
+                payment.save()
+                print("payment saved!")
+                booking.paid = "True"
+                booking.save()
+                print("status", booking.paid)
+                print("Booking updated!")
+
+                messages.success(request, "Payment was successful. Complete Checkout!")
 
                 # Return a success response
                 response_data = {
