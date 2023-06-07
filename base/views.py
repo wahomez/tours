@@ -589,6 +589,8 @@ def mpesa_payment(request, pk):
             'Content-Type': 'application/json',
             'Authorization': 'Bearer %s' % access_token
         }
+        url = str("https://2eed-102-135-170-111.ngrok-free.app/callback/" + str(booking_id) +str("/"))
+        print("URL:", url)
 
         payload = {
             "BusinessShortCode": 174379,
@@ -599,7 +601,7 @@ def mpesa_payment(request, pk):
             "PartyA": "254" + mobile,
             "PartyB": 174379,
             "PhoneNumber": "254" + mobile,
-            "CallBackURL": "https://cruizesafaris.com/callback/",
+            "CallBackURL": url,
             "AccountReference": "Cruize Beyond",
             "TransactionDesc": str(booking)
         }
@@ -622,9 +624,13 @@ def mpesa_payment(request, pk):
         return HttpResponse("We are good")
 
 @csrf_exempt
-def daraja_callback(request):
+def daraja_callback(request, pk):
     print("Working!")
-    booking = Cart.objects.get(user=request.user, cleared=False)
+    print("Key:", pk)
+    booking = Cart.objects.get(id=pk)
+    user = booking.user
+    print("Booking:", booking)
+    print("User:", user)
     # Extract relevant data from the callback
     transaction_id = request.POST.get('TransID', '')
     transaction_status = request.POST.get('TransStatus', '')
@@ -641,7 +647,7 @@ def daraja_callback(request):
                 print("Callback Data:", callback_data)
 
                 type_payment = "M-PESA"
-                payment = Payment.objects.create(user=booking.user, booking=booking, reference_id=transaction_id, type_payment=type_payment)
+                payment = Payment.objects.create(user=user, booking=booking, reference_id=transaction_id, type_payment=type_payment)
                 payment.save()
                 print("payment saved!")
                 booking.paid = "True"
@@ -650,13 +656,14 @@ def daraja_callback(request):
                 print("Booking updated!")
 
                 messages.success(request, "Payment was successful. Complete Checkout!")
+                return render("checkout", booking.id)
 
                 # Return a success response
                 response_data = {
                     'ResultCode': 0,
                     'ResultDesc': 'Success'
                 }
-                return HttpResponse(json.dumps(response_data), content_type='application/json')
+                # return HttpResponse(json.dumps(response_data), content_type='application/json')
             else:
                 # Handle the failed transaction
                 # ...
