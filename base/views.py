@@ -589,7 +589,7 @@ def mpesa_payment(request, pk):
             'Content-Type': 'application/json',
             'Authorization': 'Bearer %s' % access_token
         }
-        url = str("https://2eed-102-135-170-111.ngrok-free.app/callback/" + str(booking_id) +str("/"))
+        url = str("https://cruizesafaris.com/callback/" + str(booking_id) +str("/"))
         print("URL:", url)
 
         payload = {
