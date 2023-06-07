@@ -560,7 +560,7 @@ def mpesa_payment(request, pk):
     else:
         if request.method == "POST":
             mobile = request.POST["mobile"]
-            amount = 1
+            amount = request.POST["amount"]
             # print()
             print("KEY:", pk)
             # order = Order.objects.get(order_id=pk)
